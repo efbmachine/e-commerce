@@ -50,9 +50,8 @@ exports.addProduct = (req,res,next)=>{
         subCat = req.body.subCat;
 
     // console.log(image)
-    image.mv( `public/images/${image.name}`, (err)=>{
-        if(err)
-            return next(err)
+    image.mv( `/public/images/${image.name}`, (err)=>{
+        if(err) return next(err)
     })
     let path = encodeURI(URLprod+image.name)
     var product = new ProductModel({
