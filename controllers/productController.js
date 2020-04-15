@@ -54,7 +54,7 @@ exports.addProduct = (req,res,next)=>{
         if(err)
             return next(err)
     })
-    let path = encodeURI(Urlprod+image.name)
+    let path = encodeURI(URLprod+image.name)
     var product = new ProductModel({
                                     imgPath:path,
                                     name:name,
