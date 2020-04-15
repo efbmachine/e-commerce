@@ -50,7 +50,7 @@ exports.addProduct = (req,res,next)=>{
         subCat = req.body.subCat;
 
     // console.log(image)
-    image.mv( `/public/images/${image.name}`, (err)=>{
+    image.mv( `/app/public/images/${image.name}`, (err)=>{
         if(err) return next(err)
     })
     let path = encodeURI(URLprod+image.name)
