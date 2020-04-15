@@ -1,11 +1,22 @@
 extends layout
 
 block content
-    doctype html
-    html(lang='en')
-        include partials/headers
-        body
-            include partials/nav
-        br
-        br
-        h3 Admin page
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        h5 Welcome to the admin page
+        hr
+        p
+            | Click on the section you wish to view.
+        p
+            | Produit permet de creer, modifier ou suprimer des produits
+        p
+           | Categories permet de gerer les categories et sous categories
+        p
+            | Commandes permet de gerer les commandes(observer commande, modifier l'etat)
+        p
+            | Chat afin de discuter avec les clients (Innexistant)

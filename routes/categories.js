@@ -8,6 +8,8 @@ var category_controller = require('../controllers/categoryController')
 router.get('/create', category_controller.renderCreate)
 router.post('/create', category_controller.create)
 router.get('/show/:categoryId',category_controller.showCategory)
+
+
 // router.post('/edit/:category',category_controller.edit)
 
 // router.get('/',product_controller.getCategories)

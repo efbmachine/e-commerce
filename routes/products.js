@@ -7,7 +7,7 @@ var product_controller = require('../controllers/productController')
 router.get('/create', product_controller.renderAddProduct)
 router.post('/create', product_controller.addProduct)
 router.get('/deleteAll', product_controller.deleteAll)
-router.get('/:productId/', product_controller.getOne)
+router.get('/:productId/', product_controller.renderOne)
 router.get('/:productId/delete',product_controller.deleteOne)
 router.get('/category/:category', product_controller.getByCategory)
 

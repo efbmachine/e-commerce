@@ -19,6 +19,11 @@ categorySchema.methods.addSubCategory =(subcat) => {
         return this.subCat.push(subcat)
 
 }
+categorySchema.methods.addProduct =(product) => {
+        console.log(this)
+        return this.product.push(product._id)
+
+}
 categorySchema.methods.getSubCategory = () =>{
     return this.subCat
 }

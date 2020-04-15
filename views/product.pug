@@ -1,12 +1,14 @@
 extends layout
 
 block content
-    doctype html
-    html(lang='en')
-        include partials/headers
-        body
-            include partials/nav
-            h3= product.name
-            img(src=product.imgPath)
-            p= product.price + "FcFa"
-            p= product.description
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        h3= product.name
+        img(src=product.imgPath)
+        p= product.price + "FcFa"
+        p= product.description

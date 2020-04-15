@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        if(title)
+            h3= (title)
+        else
+            h3 Categories
+        hr
+        .add-container
+            a(href='/admin/category/create')
+                button.btn.btn-primary(type='button') Nouvelle Categorie
+
+        .flex-container
+            each cat in cats
+                a(href='/admin/category/'+cat._id)
+                    .product
+                        p= cat.name

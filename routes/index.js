@@ -2,10 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 var product_controller = require('../controllers/productController')
+var category_controller = require('../controllers/categoryController')
+
 
 /* GET home page. */
-router.get('/',product_controller.getAll);
+router.get('/',(req,res,next)=>{
+    res.send('This part is under construction')
+});
 
-router.get('/deleteAll', product_controller.deleteAll)
+
 
 module.exports = router;

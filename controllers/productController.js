@@ -14,11 +14,11 @@ exports.getAll  =    (req,res,next)=>{
         // console.log('-----------------------------------------------');
         // console.log(products)
         // console.log('-----------------------------------------------');
-        return res.render('index',{products:products})
+        return res.render('products',{products:products})
     })
 }
 
-exports.getOne = (req,res,next)=>{
+exports.renderOne = (req,res,next)=>{
     ProductModel.findById(req.params.productId,(err, product)=>{
         if(err) next(err)
         console.log('-----------------------------------------------');
@@ -61,13 +61,12 @@ exports.addProduct = (req,res,next)=>{
                                     category:category,
                                     subCat:subCat
                                 });
-    product.save((err,data)=>{
-        if(err)
-            return next(err);
-        // UserModel.findByIdAndUpdate(req.session.userId, { $push: {products: data._id}},(err)=>{
-            //console.log(user);
-        console.log(data)
-        return res.redirect('/');
+    product.save( async (err,data)=>{
+        if(err) return next(err);
+        console.log('data: ',data)
+        let cat = await CategoryModel.findOneAndUpdate({name:name},{$push:{products:data._id}})
+        console.log('cat:', cat)
+        return res.redirect(`/admin/product/${data._id}`);
     })
 
 
@@ -76,8 +75,8 @@ exports.addProduct = (req,res,next)=>{
 exports.deleteAll = (req,res,next)=>{
     ProductModel.deleteMany({},(err,product) =>{
         if(err) return next(err)
-        // console.log(product)
-        res.redirect('/')
+        console.log('deleted all products')
+        res.redirect('/admin')
     })
 }
 
