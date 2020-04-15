@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    doctype html
+    html(lang='en')
+        include partials/headers
+        body
+            include partials/nav
+        br
+        br
+        if(title)
+            h3= (title)
+        else
+            h3 Produit
+        .flex-container
+            each product in products
+                a(href='/products/'+product._id)
+                    div
+                        p= product.name
+                        img(src=product.imgPath)
+                        p= product.price + "Fcfa"
+                        p= product.description

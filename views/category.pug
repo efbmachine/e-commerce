@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    doctype html
+    html(lang='en')
+        include partials/headers
+        body
+            include partials/nav
+            h4= category.name
+            h5 Sous-:

@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    doctype html
+    html(lang='en')
+        include partials/headers
+        body
+            include partials/nav
+            h5 Creer un nouveau produit
+            bk
+            form(action = "/createProduct" method = "POST" encType="multipart/form-data")
+                label() Image:
+                input(type="file" name="img")
+                br
+                label() Nom:
+                input(name = "name" type = "text" required placeholder = "Doritos Sweet Hot Chilli")
+                br
+                label() Descrition:
+                input(name = "description" type = "text"  placeholder = "")
+                br
+                label() Prix:
+                input(name = "price" type = "number" required placeholder = "4000")
+                br
+                label() Categorie:
+                .form-group
+                    select#exampleFormControlSelect1.form-control(name='category' required)
+                        each cat in categories
+                            option= cat.name
+
+                br
+                label() Sous-Categorie:
+                input(name = "subCat" type = "text" placeholder = "Chips, Snacks, Doritos")
+                br
+                button(type = "Submit") Add new product!

@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    doctype html
+    html(lang='en')
+        include partials/headers
+        body
+            include partials/nav
+            h5 Creer une nouvelle categorie
+            br
+            form(action = "/category/create" method = "POST" encType="multipart/form-data")
+                label() Nom de categorie:
+                input(name = "name" type = "text" required placeholder = "Alimentaire")
+                br
+                label() Sous-Categorie 1:
+                input(name = "subCat0" type = "text" placeholder = "Boissons")
+                br
+                label() Sous-Categorie 2:
+                input(name = "subCat1" type = "text" placeholder = "Entretien")
+                br
+                label() Sous-Categorie 3:
+                input(name = "subCat2" type = "text" placeholder = "Fruits, legumes")
+                br
+                label() Sous-Categorie 4:
+                input(name = "subCat3" type = "text" placeholder = "Surgeles")
+                br
+                button(type = "Submit") Add new product!
