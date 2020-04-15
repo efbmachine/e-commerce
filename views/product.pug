@@ -8,7 +8,15 @@ block content
     br
     include partials/sidenav
     .main
-        h3= product.name
-        img(src=product.imgPath)
-        p= product.price + "FcFa"
-        p= product.description
+        .blah
+            h3= product.name
+            img(src=product.imgPath)
+            p= product.price + "FcFa"
+            br
+            h4 Description du produit:
+            p= product.description
+            br
+            hr
+        .add-container
+            a(href='/admin/product/'+product._id+'/delete')
+                button.btn.btn-danger(type='button') Suprimer le produit

@@ -18,10 +18,12 @@ block content
                 input(type='text', placeholder='Search..', name='search')
                 button(type='submit')
                     i.fa.fa-search
+        br
         .add-container
             a(href='/admin/product/create')
-                button.btn.btn-primary(type='button') New Product
-
+                button.btn.btn-primary(type='button') Creer un Produit
+        br
+        br
         .flex-container
             each product in products
                 a(href='/admin/product/'+product._id)
@@ -29,4 +31,3 @@ block content
                         p= product.name
                         img(src=product.imgPath)
                         p= product.price + "Fcfa"
-                        p= product.description

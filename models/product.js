@@ -8,7 +8,7 @@ var productSchema = new Schema({
     description: String,
     price: Number,
     promo:Number,
-    category:String,
+    category:{type:Schema.Types.ObjectId, ref:'Category'},
     subCat:String,
     tag:[String],
 

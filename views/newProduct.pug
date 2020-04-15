@@ -27,7 +27,9 @@ block content
             .form-group
                 select#exampleFormControlSelect1.form-control(name='category' required)
                     each cat in categories
-                        option= cat.name
+                        option(value= cat.id)= '-----'+cat.name+'-----'
+                        each sub in cat.subCat
+                            option(value=cat.id+'.'+sub)= sub
 
             br
             label() Sous-Categorie:

@@ -13,6 +13,7 @@ router.get('/products', product_controller.getAll)
 router.get('/product/create',product_controller.renderAddProduct)
 router.post('/product/create', product_controller.addProduct)
 router.get('/product/:productId',product_controller.renderOne)
+router.get('/product/:productId/delete',product_controller.deleteOne)
 // CATEGORY
 router.get('/categories', category_controller.getAll)
 router.get('/category/create',category_controller.renderCreate)

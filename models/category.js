@@ -7,24 +7,24 @@ var categorySchema = new Schema({
     product:[{type:Schema.Types.ObjectId, ref:'Product'}]
 })
 
-categorySchema.statics.getCategories = () =>{
-    return this.find({},{name:1,subCat:1},(err, category)=>{
-        if(err) next(err)
+categorySchema.statics.getCategories = function(){
+     this.find({},{name:1,subCat:1},(err, category)=>{
+        if(err) return next(err)
         console.log(category)
         return category
     })
 }
-categorySchema.methods.addSubCategory =(subcat) => {
+categorySchema.methods.addSubCategory=function(subcat) {
         console.log(this)
         return this.subCat.push(subcat)
 
 }
-categorySchema.methods.addProduct =(product) => {
+categorySchema.methods.addProduct=function(product) {
         console.log(this)
         return this.product.push(product._id)
 
 }
-categorySchema.methods.getSubCategory = () =>{
+categorySchema.methods.getSubCategory=function(){
     return this.subCat
 }
 

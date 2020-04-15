@@ -2,7 +2,8 @@ var path = require('path')
 var ProductModel = require('mongoose').model('Product');
 var CategoryModel = require('mongoose').model('Category');
 const URLprod = 'https://glovo241.herokuapp.com/images/'
-const URLlocal = 'https://localhost:3000/images/'
+const URLlocal = 'http://localhost:3000/images/'
+var URL = URLprod
 
 
 
@@ -31,7 +32,7 @@ exports.renderOne = (req,res,next)=>{
 }
 
 exports.renderAddProduct = (req,res,next)=>{
-    CategoryModel.find({},{name:1},(err,cats)=>{
+    CategoryModel.find({},{name:1, subCat:1},(err,cats)=>{
         if(err) return next(err)
         console.log('cats: ', cats)
         res.render('newProduct', {categories:cats})
@@ -45,15 +46,19 @@ exports.addProduct = (req,res,next)=>{
     var name = req.body.name,
         description  = req.body.description,
         price  = req.body.price,
-        image = req.files.img,
-        category = req.body.category,
-        subCat = req.body.subCat;
+        image = req.files.img;
+    // req.body.category = category._id+'.'+subCat
+    var cat = req.body.category.split('.',2),
+        category = cat[0],
+        subCat = cat[1];
 
-    // console.log(image)
-    image.mv( `/app/public/images/${image.name}`, (err)=>{
+
+    console.log('req.files.img:',req.files.img)
+    image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
+        console.log('err:',err)
         if(err) return next(err)
     })
-    let path = encodeURI(URLprod+image.name)
+    let path = encodeURI(URL+image.name)
     var product = new ProductModel({
                                     imgPath:path,
                                     name:name,
@@ -65,9 +70,12 @@ exports.addProduct = (req,res,next)=>{
     product.save( async (err,data)=>{
         if(err) return next(err);
         console.log('data: ',data)
-        let cat = await CategoryModel.findOneAndUpdate({name:name},{$push:{products:data._id}})
-        console.log('cat:', cat)
-        return res.redirect(`/admin/product/${data._id}`);
+        CategoryModel.findById(product.category, (err, cat)=>{
+            cat.addProduct(product)
+            cat.save(err=>{
+                return res.redirect(`/admin/product/${data._id}`);
+            })
+        })
     })
 
 
@@ -84,7 +92,7 @@ exports.deleteAll = (req,res,next)=>{
 exports.deleteOne = (req,res,next)=>{
     ProductModel.findByIdAndRemove(req.params.productId,(err,product)=>{
         if(err) return next(err)
-        res.redirect('/')
+        res.redirect(302, '/admin/products')
     })
 }
 
