@@ -1,6 +1,8 @@
 var path = require('path')
 var ProductModel = require('mongoose').model('Product');
 var CategoryModel = require('mongoose').model('Category');
+const URLprod = 'https://glovo241.herokuapp.com/images/'
+const URLlocal = 'https://localhost:3000/images/'
 
 
 
@@ -52,7 +54,7 @@ exports.addProduct = (req,res,next)=>{
         if(err)
             return next(err)
     })
-    let path = encodeURI(`http://localhost:3000/images/${image.name}`)
+    let path = encodeURI(Urlprod+image.name)
     var product = new ProductModel({
                                     imgPath:path,
                                     name:name,
