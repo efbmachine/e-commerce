@@ -8,7 +8,27 @@ block content
     br
     include partials/sidenav
     .main
-        h4= category.name
-        ul Sous-Categories:
-            each subcat in category.subCat
-                li= subcat
+        h1= category.name
+        .add-container
+            a(href='/admin/product/create')
+                button.btn.btn-primary(type='button') Creer un Produit
+        hr
+        each subcat in category.subCats
+            a(href='/admin/category/'+category._id+'/'+subcat._id)
+                h4= subcat.name +'['+subcat.products.length+']'
+
+            if(subcat.products.length!=0)
+                - n = 0;
+                .flex-container
+                    while n < 5
+                        if(subcat.products[n])
+                            .product
+                                a(href='/admin/product/'+subcat.products[n]._id)
+                                    p= subcat.products[n].name
+                                    img(src=subcat.products[n].imgPath)
+                                    p= subcat.products[n].price + "Fcfa"
+                                - n++
+                        else
+                            - n= 1000
+            br
+            hr

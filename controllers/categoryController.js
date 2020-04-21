@@ -12,7 +12,16 @@ exports.renderCreate = (req,res,next)=>{
 
 exports.create = (req,res,next) => {
     console.log(req.body)
-    var category = new CategoryModel(req.body)
+    let subCats = []
+    req.body.subCats.forEach((subcat, i) => {
+        if(subcat != '')
+            subCats.push({name:subcat,products:[]})
+    });
+
+    var category = new CategoryModel({
+        name:req.body.name,
+        subCats:subCats
+    })
     category.save((err,data)=>{
         if(err) return next(err)
         // console.log(data)
@@ -24,8 +33,23 @@ exports.create = (req,res,next) => {
 
 exports.showCategory = (req,res,next)=>{
     CategoryModel.findById(req.params.categoryId, (err, category)=>{
-        console.log(category)
-        res.render('category',{category:category})
+        if(err) next(err)
+        category.populate({path: 'subCats.products',model:'Product'},(err,cat)=>{
+                res.render('category',{category:category})
+        })
+    })
+}
+exports.showSubcategory = (req,res,next)=>{
+    CategoryModel.findById(req.params.categoryId, (err, category)=>{
+        if(err) next(err)
+        category.populate({path: 'subCats.products',model:'Product'},(err,cat)=>{
+                let subs = cat.subCats
+                subs.forEach((sub, i) => {
+                    if(sub._id == req.params.subcategoryId)
+                        return res.render('products',{title:sub.name,products:sub.products})
+                });
+
+        })
     })
 }
 

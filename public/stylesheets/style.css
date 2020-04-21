@@ -16,7 +16,7 @@ a:visited {
 }
 
 a:hover {
-  color: yellow;
+  color: blue;
   background-color: transparent;
   text-decoration: underline;
 }
@@ -36,7 +36,7 @@ a:active {
 img{
 
     max-width: inherit;
-    max-height: 300px;
+    max-height: 250px;
 
     }
 

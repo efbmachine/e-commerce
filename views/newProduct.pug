@@ -28,8 +28,8 @@ block content
                 select#exampleFormControlSelect1.form-control(name='category' required)
                     each cat in categories
                         option(value= cat.id)= '-----'+cat.name+'-----'
-                        each sub in cat.subCat
-                            option(value=cat.id+'.'+sub)= sub
+                        each sub in cat.subCats
+                            option(value=cat.id+'.'+sub.name)= sub.name
 
 
             br

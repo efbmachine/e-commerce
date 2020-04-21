@@ -32,7 +32,7 @@ exports.renderOne = (req,res,next)=>{
 }
 
 exports.renderAddProduct = (req,res,next)=>{
-    CategoryModel.find({},{name:1, subCat:1},(err,cats)=>{
+    CategoryModel.find({},{name:1, subCats:1},(err,cats)=>{
         if(err) return next(err)
         console.log('cats: ', cats)
         res.render('newProduct', {categories:cats})

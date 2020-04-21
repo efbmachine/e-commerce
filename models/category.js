@@ -3,12 +3,14 @@ var Schema = mongoose.Schema;
 
 var categorySchema = new Schema({
     name: String,
-    subCat:[String],
-    product:[{type:Schema.Types.ObjectId, ref:'Product'}]
+    subCats:[{
+        name:String,
+        products:[{type:Schema.Types.ObjectId, ref:'Product'}]
+    }],
 })
 
 categorySchema.statics.getCategories = function(){
-     this.find({},{name:1,subCat:1},(err, category)=>{
+     this.find({},{name:1,subCats:1},(err, category)=>{
         if(err) return next(err)
         console.log(category)
         return category
@@ -16,16 +18,21 @@ categorySchema.statics.getCategories = function(){
 }
 categorySchema.methods.addSubCategory=function(subcat) {
         console.log(this)
-        return this.subCat.push(subcat)
+        return this.subCats.push(subcat)
 
 }
 categorySchema.methods.addProduct=function(product) {
-        console.log(this)
-        return this.product.push(product._id)
+    this.subCats.forEach((subcat, i) => {
+        if(subcat.name == product.subCat){
+            console.log(subcat)
+            return subcat.products.push(product._id)
+        }
+    });
+
 
 }
 categorySchema.methods.getSubCategory=function(){
-    return this.subCat
+    return this.subCats
 }
 
 var Category = mongoose.model('Category',categorySchema)
