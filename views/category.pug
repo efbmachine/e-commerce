@@ -9,13 +9,29 @@ block content
     include partials/sidenav
     .main
         h1= category.name
-        .add-container
-            a(href='/admin/product/create')
-                button.btn.btn-primary(type='button') Creer un Produit
+        - var catPath = `/admin/category/${category._id}`
+        .titleButton
+            button.btn.btn-danger(type='button' onclick='del("'+ category.name +'","'+ catPath +'/delete")')
+                i.fa.fa-trash Supprimer Categorie
+            .addcontainer
+                a(href='/admin/product/create')
+                    button.btn.btn-success(type='button')
+                        i.fa.fa-plus Nouveau Produit
+            .addcontainer
+                a(href=catPath+'/edit')
+                    button.btn.btn-primary(type='button')
+                        i.fa.fa-pencil Modifier Categorie
+        br
+        br
         hr
         each subcat in category.subCats
+            - var name = subcat.name
+            - var path = `/admin/category/${category._id}/${subcat._id}/delete`
             a(href='/admin/category/'+category._id+'/'+subcat._id)
-                h4= subcat.name +'['+subcat.products.length+']'
+                =subcat.name +'['+subcat.products.length+']'
+            button.btn.btn-danger.btn-sm(type='button' onclick='del("'+ name +'","'+ path +'")')
+                i.fa.fa-trash
+
 
             if(subcat.products.length!=0)
                 - n = 0;
@@ -32,3 +48,13 @@ block content
                             - n= 1000
             br
             hr
+            script.
+              function del(name,path) {
+                let r = confirm(
+                `Voulez vous vraiment supprimer la categorie: ${name}
+                Si vous le faite vous supplimerez egalement tout les produits qu'elle contient
+                ${path}`
+                );
+                if(r==true)
+                    location.replace(path)
+              }

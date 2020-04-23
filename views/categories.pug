@@ -12,10 +12,11 @@ block content
             h3= (title)
         else
             h3 Categories
-        hr
-        .add-container
+        .titleButton
             a(href='/admin/category/create')
-                button.btn.btn-primary(type='button') Nouvelle Categorie
+                button.btn.btn-success(type='button') Nouvelle Categorie
+
+        hr
 
         .flex-container
             each cat in cats

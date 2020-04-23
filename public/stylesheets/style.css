@@ -65,6 +65,7 @@ img{
 }
 
 .main {
+    position: relative;
   margin-left: 150px; /* Same width as the sidebar + left position in px */
   font-size: 28px; /* Increased text to enable scrolling */
   padding: 0px 10px;
@@ -79,6 +80,11 @@ img{
     font-size: 20px;
 
 
+}
+.titleButton{
+    position:absolute;
+    right:10px;
+    top:0px
 }
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {

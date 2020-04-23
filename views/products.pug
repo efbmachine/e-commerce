@@ -12,17 +12,17 @@ block content
             h3= (title)
         else
             h3 Produits
+        .titleButton
+            a(href='/admin/product/create')
+                button.btn.btn-success(type='button') Creer un Produit
+
         hr
         .search-container
             form(action='/action_page.php')
                 input(type='text', placeholder='Search..', name='search')
                 button(type='submit')
                     i.fa.fa-search
-        br
-        .add-container
-            a(href='/admin/product/create')
-                button.btn.btn-primary(type='button') Creer un Produit
-        br
+        
         hr
         .flex-container
             each product in products

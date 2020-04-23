@@ -10,6 +10,17 @@ block content
     .main
         .blah
             h3= product.name
+            - var path = `/admin/product/${product._id}`
+            br
+            .titleButton
+                a(href=path+'/edit')
+                    button.btn.btn-primary(type='button')
+                        i.fa.fa-pencil Modifier Produit
+                .addcontainer
+                    a(href=path+'/delete')
+                        button.btn.btn-danger(type='button')
+                            i.fa.fa-trash Suprimer le produit
+
             img(src=product.imgPath)
             p= product.price + "FcFa"
             br
@@ -17,6 +28,3 @@ block content
             p= product.description
             br
             hr
-        .add-container
-            a(href='/admin/product/'+product._id+'/delete')
-                button.btn.btn-danger(type='button') Suprimer le produit
