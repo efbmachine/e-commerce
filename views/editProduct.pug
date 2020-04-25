@@ -1,0 +1,40 @@
+extends layout
+
+block content
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        h5 Modifer un produit
+        bk
+        form(action = "/admin/product/"+product._id+"/edit" method = "POST" encType="multipart/form-data")
+            label() Image:
+            input(type="file" name="img")
+            img(src=product.imgPath)
+            br
+            label() Nom:
+            input(name = "name" type = "text" value = product.name)
+            br
+            label() Descrition:
+            input(name = "description" type = "text"  value = product.description)
+            br
+            label() Prix:
+            input(name = "price" type = "number" required value = product.price)
+            br
+            label() Categorie:
+            .form-group
+                select#exampleFormControlSelect1.form-control(name='category' required)
+                    each cat in categories
+                        option(value= cat.id)= '-----'+cat.name+'-----'
+                        each sub in cat.subCats
+                            if(product.subCat == sub.name)
+                                option(value=cat.id+'.'+sub.name selected)=sub.name
+                            else
+                                option(value=cat.id+'.'+sub.name)= sub.name
+
+
+            br
+            button(type = "Submit") Sauvegarder les modifications !

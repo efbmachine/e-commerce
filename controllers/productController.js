@@ -31,6 +31,73 @@ exports.renderOne = (req,res,next)=>{
     })
 }
 
+exports.renderEdit = (req,res,next)=>{
+    ProductModel.findById(req.params.productId,(err, product)=>{
+        if(err) next(err)
+        console.log('-----------------------------------------------');
+        console.log(product)
+        console.log('-----------------------------------------------');
+        CategoryModel.find({},{name:1, subCats:1},(err,cats)=>{
+            if(err) return next(err)
+            console.log('cats: ', cats)
+            return res.render('editProduct',{product:product, categories:cats})
+
+        })
+    })
+}
+
+exports.edit = (req,res,next)=>{
+    ProductModel.findById(req.params.productId,(err,product)=>{
+        if(err) return next(err)
+        product.name = req.body.name
+        product.description = req.body.description
+        product.price = req.body.price
+
+        var cat = req.body.category.split('.',2),
+            category = cat[0],
+            subCat = cat[1];
+        product.category = category
+        var oldSubcat = product.subCat
+        product.subCat = subCat
+
+        var image = req.files? req.files.img : null
+        if(image != null){
+            image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
+                if(err) return next(err)
+                let path = encodeURI(URL+image.name)
+                product.imgPath = path
+            })
+        }
+        product.save(err=>{
+            if(err) next(err)
+            console.log('product saved')
+            if(oldSubcat != product.subCat){
+                CategoryModel.findById(category,(err,cat)=>{
+                    if(err) next(err)
+                    console.log('category found')
+                    cat.subCats.forEach((subCat) => {
+                        if(subCat.name==oldSubcat){
+                            let index = subCat.products.indexOf(product._id)
+                            console.log(index)
+                            subCat.products.splice(index,1)
+                        }
+                    });
+                    cat.addProduct(product)
+                    cat.save(err=>{
+                        if(err) return next(err)
+                        res.redirect(`/admin/product/${product._id}`)
+                    })
+
+                })
+            }
+            else{
+                res.redirect(`/admin/product/${product._id}`)
+            }
+        })
+
+    })
+}
+
 exports.renderAddProduct = (req,res,next)=>{
     CategoryModel.find({},{name:1, subCats:1},(err,cats)=>{
         if(err) return next(err)
@@ -55,7 +122,6 @@ exports.addProduct = (req,res,next)=>{
 
     console.log('req.files.img:',req.files.img)
     image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
-        console.log('err:',err)
         if(err) return next(err)
     })
     let path = encodeURI(URL+image.name)
@@ -73,6 +139,7 @@ exports.addProduct = (req,res,next)=>{
         CategoryModel.findById(product.category, (err, cat)=>{
             cat.addProduct(product)
             cat.save(err=>{
+                if(err) next(err)
                 return res.redirect(`/admin/product/${data._id}`);
             })
         })
