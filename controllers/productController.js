@@ -1,10 +1,33 @@
 var path = require('path')
+var AWS = require('aws-sdk')
 var ProductModel = require('mongoose').model('Product');
 var CategoryModel = require('mongoose').model('Category');
-const URLprod = 'https://glovo241.herokuapp.com/images/'
-const URLlocal = 'http://localhost:3000/images/'
-var URL = URLprod
 
+
+
+
+//AWS.config.credentials = credentials
+const s3 = new AWS.S3();
+console.log(AWS.config)
+const uploadFile = (file) => {
+    // Read content from the file
+
+    // Setting up S3 upload parameters
+    const params = {
+        Bucket: 'glovo241images',
+        Key: file.name, // File name you want to save as in S3
+        Body: file.data
+    };
+
+    // Uploading files to the bucket
+    s3.upload(params, function(err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+        return data.Location
+    });
+};
 
 
 //Display list of all products
@@ -121,10 +144,10 @@ exports.addProduct = (req,res,next)=>{
 
 
     console.log('req.files.img:',req.files.img)
-    image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
-        if(err) return next(err)
-    })
-    let path = encodeURI(URL+image.name)
+    let path = uploadFile(image)
+    // image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
+    //     if(err) return next(err)
+    // })
     var product = new ProductModel({
                                     imgPath:path,
                                     name:name,
