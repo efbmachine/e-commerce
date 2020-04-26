@@ -24,6 +24,8 @@ router.get('/category/:categoryId',category_controller.showCategory)
 router.get('/category/:categoryId/edit',category_controller.renderEdit)
 router.post('/category/:categoryId/edit',category_controller.edit)
 router.get('/category/:categoryId/:subcategoryId',category_controller.showSubcategory)
+router.get('/category/:categoryId/:subcategoryId/delete',category_controller.deleteSubcategory)
+
 // router.post('/edit/:category',category_controller.edit)
 router.get('/categories/deleteAll', category_controller.deleteAll)
 router.get('/products/deleteAll', product_controller.deleteAll)

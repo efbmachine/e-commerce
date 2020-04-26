@@ -86,6 +86,22 @@ exports.showSubcategory = (req,res,next)=>{
     })
 }
 
+exports.deleteSubcategory = (req,res,next)=>{
+    CategoryModel.findById(req.params.categoryId, (err, category)=>{
+        if(err) next(err)
+        category.subCats.forEach((subCat, i) => {
+            if(subCat._id==req.params.subcategoryId){
+                category.subCats.splice(i,1)
+                category.save((err)=>{
+                    if(err) next(err)
+                    return res.redirect(`/admin/category/${category._id}`)
+                })
+            }
+        });
+        return next(new Error("Doesn't exitst"))
+    })
+}
+
 exports.deleteAll = (req,res,next)=>{
     CategoryModel.deleteMany({},(err,categories) =>{
         if(err) return next(err)
