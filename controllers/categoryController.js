@@ -39,6 +39,39 @@ exports.showCategory = (req,res,next)=>{
         })
     })
 }
+exports.renderEdit = (req,res,next)=>{
+    CategoryModel.findById(req.params.categoryId, (err, category)=>{
+        if(err) next(err)
+        res.render('editCategory',{category:category})
+    })
+}
+
+
+exports.edit = (req,res,next)=>{
+    CategoryModel.findById(req.params.categoryId,(err,category)=>{
+        if(err) next(err)
+        console.log(req.body)
+        let subCats = []
+        req.body.subCats.forEach((subcat, i) => {
+            if(subcat != '')
+                subCats.push({name:subcat,products:[]})
+        });
+        subCats.forEach((subCat, i) => {
+            if(category.subCats[i]){
+                category.subCats[i].name = subCat.name
+            }
+            else
+                category.subCats.push(subCat)
+        });
+        category.save(err=>{
+            if(err)next(err)
+            res.redirect(`/admin/category/${category._id}`)
+        })
+
+    })
+}
+
+
 exports.showSubcategory = (req,res,next)=>{
     CategoryModel.findById(req.params.categoryId, (err, category)=>{
         if(err) next(err)

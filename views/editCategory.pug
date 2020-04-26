@@ -1,0 +1,43 @@
+extends layout
+
+block content
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        h2 Creer une nouvelle categorie
+        br
+        form(action = "/admin/category/"+category._id+"/edit" method = "POST" encType="multipart/form-data")
+            label() Nom de categorie:
+            input(name = "name" type = "text" required value = category.name)
+            br
+            hr
+            h4 Sous categories:
+            .subcats
+                each subcat,index in category.subCats
+                    - var name = subcat.name
+                    input(name = "subCats" type = "text" value='' +name placeholder=name)
+                    - if((index+1)%2==0)
+                        br
+
+
+            br
+            button(type = "Submit") Sauvegarder les modifications!
+        br
+        button(onclick='addSubCat()') + Ajouter une sous-categorie
+
+
+    script.
+        function addSubCat() {
+            var x = document.getElementsByClassName("subcats");
+            var subcat = document.createElement('input')
+            subcat.name ='subCats'
+            subcat.type = 'text'
+            subcat.placeholder = 'Nouvelle sous-categorie'
+            if((x[0].length+1)%2==0)
+                x[0].appendChild(document.createElement('BR'))
+            x[0].appendChild(subcat)
+        }

@@ -48,8 +48,8 @@ exports.renderEdit = (req,res,next)=>{
     })
 }
 
-exports.edit =  async (req,res,next)=>{
-     ProductModel.findById(req.params.productId,async (err,product)=>{
+exports.edit =   (req,res,next)=>{
+     ProductModel.findById(req.params.productId, (err,product)=>{
         if(err) return next(err)
         product.name = req.body.name
         product.description = req.body.description
@@ -73,7 +73,7 @@ exports.edit =  async (req,res,next)=>{
             };
 
             // Uploading files to the bucket
-            await s3.upload(params, function(err, data) {
+                s3.upload(params, function(err, data) {
                 if (err) { next(err);}
                 console.log(`File uploaded successfully. ${data.Location}`);
                 product.imgPath = data.Location
