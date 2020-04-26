@@ -8,7 +8,6 @@ var CategoryModel = require('mongoose').model('Category');
 
 //AWS.config.credentials = credentials
 const s3 = new AWS.S3();
-console.log(AWS.config)
 const uploadFile = (file) => {
     // Read content from the file
 
