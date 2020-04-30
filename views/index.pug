@@ -1,0 +1,42 @@
+extends clientLayout
+
+block content
+    .index
+        .container-fluid
+            .selection
+                p
+                    b Bienvenue :)
+                p Commandez vos aliments favoris et faites vous livrer a DOMICILE
+                button.btn.btn-primary(type='button')
+                    |Je me connecte
+
+
+
+            .selection
+                p
+                    b Rayon
+                if(!category)
+                    p Aucun rayon existant
+                else
+                    .flex-container
+                        each subCat in category.subCats
+                            a(href='category/'+category.name+'/'+subCat._id)
+                                .box
+                                    p= subCat.name
+
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br

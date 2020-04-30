@@ -1,0 +1,14 @@
+extends clientLayout
+
+block content
+    .title
+        p
+            b= subCat.name + ' '
+            | (#{subCat.products.length} produits)
+    .flex-container.selection
+        each product in subCat.products
+            a(href='/product/'+product._id)
+                .product
+                    p= product.name
+                    img(src=product.imgPath)
+                    p= product.price + "Fcfa"

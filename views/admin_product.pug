@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    include partials/nav
+    br
+    h3 Admin page
+    hr
+    br
+    include partials/sidenav
+    .main
+        .blah
+            h3= product.name
+            - var path = `/admin/product/${product._id}`
+            br
+            .titleButton
+                a(href=path+'/edit')
+                    button.btn.btn-primary(type='button')
+                        i.fa.fa-pencil Modifier Produit
+                .addcontainer
+                    a(href=path+'/delete')
+                        button.btn.btn-danger(type='button')
+                            i.fa.fa-trash Suprimer le produit
+
+            img(src=product.imgPath)
+            p= product.price + "FcFa"
+            br
+            h4 Description du produit:
+            p= product.description
+            br
+            hr

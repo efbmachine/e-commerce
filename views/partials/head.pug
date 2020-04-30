@@ -1,0 +1,22 @@
+.container-fluid.mainNav
+
+    nav.navbar.navbar-expand-md.navbar-light.bg-light
+        a.navbar-brand(href='/')
+            img.logo(src='/images/kiw.jpeg')
+            |    Glovo241
+        button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+        #navbarSupportedContent.collapse.navbar-collapse
+            ul.navbar-nav.mr-auto
+            form(action='/search' method = 'POST')
+                .input-group.mb-3
+                    input.form-control(name='search', type='text', placeholder="lait")
+                    .input-group-append
+                        button.btn.btn-outline-secondary(type='submit')
+                            i.fa.fa-search
+            a.nav-link(href='#')
+                i.fa.fa-heart.fa-3x
+            a.nav-link(href='#')
+                i.fa.fa-user.fa-3x
+            a.nav-link(href='#')
+                i.fa.fa-shopping-cart.fa-3x

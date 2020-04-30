@@ -19,7 +19,7 @@ exports.getAll  =    (req,res,next)=>{
         // // console.log('-----------------------------------------------');
         // // console.log(products)
         // // console.log('-----------------------------------------------');
-        return res.render('products',{products:products})
+        return res.render('admin_products',{products:products})
     })
 }
 
@@ -29,7 +29,7 @@ exports.renderOne = (req,res,next)=>{
         // console.log('-----------------------------------------------');
         // console.log(product)
         // console.log('-----------------------------------------------');
-        return res.render('product',{product:product})
+        return res.render('admin_product',{product:product})
     })
 }
 

@@ -2,13 +2,19 @@ var express = require('express');
 var router = express.Router();
 
 var product_controller = require('../controllers/productController')
+var ProductModel = require('mongoose').model('Product');
+
 
 /* GET home page. */
-router.get('/create', product_controller.renderAddProduct)
-router.post('/create', product_controller.addProduct)
-router.get('/deleteAll', product_controller.deleteAll)
-router.get('/:productId/', product_controller.renderOne)
-router.get('/:productId/delete',product_controller.deleteOne)
-router.get('/category/:category', product_controller.getByCategory)
+
+router.get('/:productId/', async (req,res,next)=>{
+    try{
+        let product = await ProductModel.findById(req.params.productId)
+        console.log(product)
+        return res.render('product',{product:product})
+    }catch(err){
+        return next(err)
+    }
+})
 
 module.exports = router;

@@ -3,7 +3,7 @@ var CategoryModel = require('mongoose').model('Category');
 exports.getAll = (req,res,next) => {
     CategoryModel.find({},(err,cats)=>{
         if(err) next(err)
-        res.render('categories',{cats:cats})
+        res.render('admin_categories',{cats:cats})
     })
 }
 exports.renderCreate = (req,res,next)=>{
@@ -35,7 +35,7 @@ exports.showCategory = (req,res,next)=>{
     CategoryModel.findById(req.params.categoryId, (err, category)=>{
         if(err) next(err)
         category.populate({path: 'subCats.products',model:'Product'},(err,cat)=>{
-                res.render('category',{category:category})
+                res.render('admin_category',{category:category})
         })
     })
 }
@@ -79,7 +79,7 @@ exports.showSubcategory = (req,res,next)=>{
                 let subs = cat.subCats
                 subs.forEach((sub, i) => {
                     if(sub._id == req.params.subcategoryId)
-                        return res.render('products',{title:sub.name,products:sub.products})
+                        return res.render('admin_products',{title:sub.name,products:sub.products})
                 });
 
         })
