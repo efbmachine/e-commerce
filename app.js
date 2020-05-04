@@ -4,8 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
+var session = require('express-session');
 require('./config/mongoose');
-require('./config/passport');
+var passport = require('./config/passport');
 
 
 var indexRouter = require('./routes/index');
@@ -28,6 +29,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: 'keyboard screen glass',
+    // resave: true,
+    // saveUninitialized: true,
+    // cookie: {
+    //     secure: true,
+    //     maxAge: 15*60*1000
+    // }
+    }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);

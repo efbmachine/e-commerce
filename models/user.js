@@ -1,6 +1,8 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-db = mongoose.connection;
+var CartModel = require('mongoose').model('Cart');
+
+var mongoose = require('mongoose'),
+    crypto = require('crypto'),
+    Schema = mongoose.Schema;
 
 var userSchema = new Schema({
     name: String,
@@ -14,15 +16,55 @@ var userSchema = new Schema({
     },
     password: {
         type:String,
-        required: [true,"can't be blank"],
+        validate: [
+            function(password) {
+                return password && password.length > 6;
+            }, 'Password should be longer'
+        ]
     },
-    courses: [{type:Schema.Types.ObjectId, ref: 'Course'}]
+    salt: {
+        type: String
+    },
+    cart: {type:Schema.Types.ObjectId, ref: 'Cart'},
+    orders: [{type:Schema.Types.ObjectId, ref: 'Orders'}]
+
+
 });
 
-userSchema.pre('save',(next)=>{
-    next()
+userSchema.pre('save',async function(next){
+    console.log('preSave user')
+    this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+    this.password = this.hashPassword(this.password);
+    console.log('done pre save user')
+    let cart = new CartModel()
+    cart.owner = this._id
+    cart.save()
+    this.cart = cart._id
+    next();
 });
 
+userSchema.methods.addToCart = async function(product){
+    let cart = await CartModel.findById(req.session.passport.user)
+    cart.addProduct(product)
+    cart.save()
+}
+userSchema.methods.hashPassword = function(password) {
+    return crypto.pbkdf2Sync(password, this.salt, 10000,64,'sha1').toString('base64');
+};
+
+userSchema.methods.authenticate = function(password) {
+    return this.password === this.hashPassword(password);
+};
+
+userSchema.statics.exists = async function(email) {
+    let user = await this.findOne({email:email})
+    if(user === null){
+        console.log('can create')
+        return false
+    }
+    else
+        return true
+}
 
 var User = mongoose.model('User', userSchema);
 

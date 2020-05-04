@@ -7,8 +7,9 @@ block content
                 p
                     b Bienvenue :)
                 p Commandez vos aliments favoris et faites vous livrer a DOMICILE
-                button.btn.btn-primary(type='button')
-                    |Je me connecte
+                a(href='/signin')
+                    button#connect.btn.btn-primary(type='button')
+                        |Je me connecte
 
 
 
@@ -23,20 +24,14 @@ block content
                             a(href='category/'+category.name+'/'+subCat._id)
                                 .box
                                     p= subCat.name
-
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
+            p= connected
+    script.
+        connected=#{connected}
+        if(connected==true){
+            var x = document.getElementById("connect");
+            x.remove()
+            var y = document.getElementById('shoppingCart')
+            var child = document.createElement('div')
+            child.innerHTML = items
+            y.appendChild(child)
+        }

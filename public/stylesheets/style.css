@@ -2,15 +2,51 @@ body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     z-index: -1;
 }
+.maxTotal{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+}
+.border{
+    width:100%;
+    margin-left:5%;
+    margin-right:5%;
+    margin-bottom:5px;
+    padding: 10px;
+    border:dotted black;
+}
+.quantity{
+    margin-left: auto;
+    position:relative;
+}
+.total{
+    margin-left: auto;
+}
+.sign{
+    margin-left: auto;
+    width:40px;
+    text-align: center;
+}
+.order{
+    margin: 15px
+}
+.cartProduct{
+    max-width:25%
+}
+.cartProduct img{
+    width:50%;
+    height:10%
+}
 
 a:link {
-  color: blue;
+  color: DodgerBlue;
   background-color: transparent;
   text-decoration: none;
 }
 
 a:visited {
-  color: DodgerBlue;
+  color: blue;
   background-color: transparent;
   text-decoration: none;
 }
@@ -30,7 +66,7 @@ a:active {
 .flex-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content:space-around;
     align-items: center;
 }
 
@@ -90,13 +126,14 @@ img{
 }
 .selection{
     padding:20px;
+    color: DodgerBlue;
     margin-top: 10px;
     margin-bottom: 50px;
     font: 40px "Apple Chancery";
     border-radius: 40px;
     font-family: cursive;
-    background-color: orange;
-    border: solid white;
+    background-color: white;
+    border: solid orange;
     text-align: center;
 }
 .selection button{
@@ -129,7 +166,7 @@ img{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: LightGrey;
     width:150px;
     height:150px;
     font-size: 14px;
@@ -161,8 +198,14 @@ img{
 .addToCart{
     margin-top:100px;
     max-height: 120px;
-    border: 1px solid DodgerBlue;
+    border: 1px solid orange;
 
+}
+.container{
+    margin:auto
+}
+.container-fluid{
+    margin:auto
 }
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {

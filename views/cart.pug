@@ -1,0 +1,49 @@
+extends clientLayout
+
+block content
+    .container-fluid
+        h2 Mon panier
+        each item,index in cart.list
+            .row
+                .flex-container.border
+                    .cartProduct
+                        a(href='/product/'+item.product._id)
+                            img(src=item.product.imgPath)
+                            p= item.product.name
+                    .flex-container
+                        .price
+                            p(id=`price${index}`)= item.product.price
+                        .sign
+                            p X
+                        .quantity
+                            input(oninput=`calcTotal()`, id='quantity'+index,type='number',value=item.quantity,name='quantity',min='0',max='20')
+                        .total
+                            p(id=`total${index}`) 40000 xaf
+        .maxTotal
+            h3 Total:
+            h3(id=`maxTotal`) 0 xaf
+
+
+        button.order.btn.btn-primary(type='button')
+            |Passez ma commande
+
+
+    script.
+        length=#{cart.list.length}
+
+        function myFunction(index) {
+            let price = document.getElementById(`price${index}`).innerHTML;
+            let quantity = Number(document.getElementById("quantity"+index).value);
+            document.getElementById("total"+index).innerHTML = price * quantity + ' Fcfa'
+            return(price*quantity)
+        }
+
+        function calcTotal(){
+            let totalElement = document.getElementById('maxTotal')
+            let total = 0
+            for(let i=0;i<length;i++){
+                total += myFunction(i)
+            }
+            totalElement.innerHTML = total + " Fcfa"
+        }
+        calcTotal()

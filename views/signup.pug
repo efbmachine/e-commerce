@@ -1,0 +1,22 @@
+extends clientLayout
+
+block content
+    if(message)
+    .message
+        h4 #{message}
+    .container
+        h3 Creer un compte
+        form(action = "/signup" method = "POST")
+            input(name = "name" type = "text" placeholder="Nom\(optional\)")
+            br
+            input(name = "email" type = "email" required placeholder = "Addresse Email")
+            br
+            input(name = "password" type = "password" required placeholder = "Mot de Passe")
+            br
+
+            button(type = "Submit") Sign me up!
+            br
+            br
+        .sentence
+            p Vous avez deja un compte ?
+                a(href='/signin') Se connecter
