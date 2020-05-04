@@ -8,7 +8,7 @@ block content
             h3 Se Connecter
             form(action = "/signin" method = "POST")
                 input(name = "email" type = "email" required placeholder = "Email Address")
-                input(name = "password" type = "password" required placeholder = "Password")
+                input(name = "password" type = "password" required placeholder = "Password" minlength=7)
                 br
                 br
                 button(type = "Submit") Sign me in!
