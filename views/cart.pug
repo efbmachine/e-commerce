@@ -3,29 +3,40 @@ extends clientLayout
 block content
     .container-fluid
         h2 Mon panier
-        each item,index in cart.list
-            .row
-                .flex-container.border
-                    .cartProduct
-                        a(href='/product/'+item.product._id)
-                            img(src=item.product.imgPath)
-                            p= item.product.name
-                    .flex-container
-                        .price
-                            p(id=`price${index}`)= item.product.price
-                        .sign
-                            p X
-                        .quantity
-                            input(oninput=`calcTotal()`, id='quantity'+index,type='number',value=item.quantity,name='quantity',min='0',max='20')
-                        .total
-                            p(id=`total${index}`) 40000 xaf
-        .maxTotal
-            h3 Total:
-            h3(id=`maxTotal`) 0 xaf
+        if(cart.list.length==0)
+            .flex-container.border
+                p Aucun produit
+                    a(href='/') Clickez ici pour ajouter des produits
 
+        else
+            form(action = "/order" method = "POST" encType="multipart/form-data")
+                each item,index in cart.list
+                    .row
+                        .flex-container.border
+                            .cartProduct
+                                a(href='/product/'+item.product._id)
+                                    img(src=item.product.imgPath)
+                                    p= item.product.name
+                                input(type='hidden', name='item',value=item.product._id)
+                            .flex-container
+                                .price
+                                    p(id=`price${index}`)= item.product.price
+                                .sign
+                                    p X
+                                .quantity
+                                    input(name=`qty`,oninput=`calcTotal()`, id='quantity'+index,type='number',value=item.quantity,min='0',max='20')
+                                .total
+                                    p(id=`total${index}`) 40000 xaf
+                .maxTotal
+                    h3 Total:
+                    h3(id=`maxTotal`) 0 xaf
+                    input(id='submitPrice', name='price',type='hidden',value=0)
 
-        button.order.btn.btn-primary(type='button')
-            |Passez ma commande
+                button.order.btn.btn-success(type='submit',formaction='/saveCart')
+                    |Sauvegarder panier
+                button.order.btn.btn-primary(type='submit')
+                    |Passez ma commande
+
 
 
     script.
@@ -45,5 +56,6 @@ block content
                 total += myFunction(i)
             }
             totalElement.innerHTML = total + " Fcfa"
+            document.getElementById('submitPrice').value = total
         }
         calcTotal()

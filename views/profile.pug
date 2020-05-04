@@ -1,0 +1,13 @@
+extends clientLayout
+
+block content
+    a(href='/orders') Commandes
+    br
+    a(href='/logout') se Deconnecter
+    br
+    .container.info
+        h2 Info
+        .subCat
+            p= 'Name: ' + user.name
+            p=  'Email: ' + user.email
+            p=  'Numero whatsApp: ' 

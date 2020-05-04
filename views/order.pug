@@ -1,0 +1,20 @@
+extends clientLayout
+
+block content
+    h2= 'Commande #'+order._id
+    hr
+    .container-fluid
+        h3 Produits
+        .container
+            each item,index in order.list
+                .row
+                    .flex-container
+                        a(href='/product/'+item.product._id)
+                            p= item.product.name
+                        .blah
+                            p= '('+item.product.price +'Fcfa  X  '+  item.quantity +')'
+        .info1
+            p= 'Prix Total:' + order.price + 'Fcfa'
+        hr
+        .info2
+            p= 'Status:' + order.state

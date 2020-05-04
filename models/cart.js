@@ -28,6 +28,29 @@ cartSchema.methods.addProduct = async function (productId,quantity=1){
         return this.list.push(item)
     }
 }
+cartSchema.methods.editCart = async function (products,qty){
+    await this.list.forEach((item, i) => {
+        try {
+            products.forEach((product, j) => {
+                if(item.product==product)
+                    if(qty[j]==0){
+                        this.list.splice(i,1)
+                    }else{
+                        this.list[i].quantity = qty[j]
+                    }
+            });
+        } catch (e) {
+            if(item.product==products){
+                if(qty==0){
+                    this.list.splice(i,1)
+                }else{
+                    this.list[i].quantity = qty
+                }
+            }
+        }
+
+    });
+}
 cartSchema.methods.removeProduct = (product,quantity=1)=>{
 
     // NEEDS TO BE DONE

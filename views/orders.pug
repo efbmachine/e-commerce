@@ -1,0 +1,14 @@
+extends clientLayout
+
+block content
+    h1 Mes commandes
+    .container-fluid
+        each order in orders
+            .row
+                .flex-container.border
+                    .info1
+                        a(href='/order/'+order._id)
+                            p= '#' + order._id
+                            p= 'Prix: '+  order.price + "Fcfa"
+                    .info2
+                        p= 'Status:' + order.state

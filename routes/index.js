@@ -4,6 +4,7 @@ var router = express.Router();
 var product_controller = require('../controllers/productController')
 var category_controller = require('../controllers/categoryController')
 var CategoryModel = require('mongoose').model('Category');
+var OrderModel = require('mongoose').model('Order');
 var CartModel = require('mongoose').model('Cart');
 var ProductModel = require('mongoose').model('Product');
 var UserModel = require('mongoose').model('User');
@@ -32,19 +33,20 @@ router.get('/cart',  connectEnsureLogin.ensureLoggedIn('/signin'),async (req,res
     return res.render('cart',{cart:cart})
 
 })
-//
-// CartModel.findOne({owner:req.session.passport.user},(err,cart)=>{
-//     if(err) return next(err)
-//     cart.populate({path: 'products.id',model:'Product'},(err,cart)=>{
-//         if(err) return next(err)
-//         console.log('cart:',cart.products)
-//         return res.render('cart',{cart:cart})
-//     })
-//     // cart.populate({path:'products',model:'Product'},(err,cart)=>{
-//         // console.log('cart:',cart)
-//         // res.render('cart',{cart:cart})
-//     // })
-// })
+
+router.post('/saveCart',async(req,res,next)=>{
+    if(!req.session.passport){
+        return res.redirect('/signin')
+    }else{
+        let cart = await CartModel.findOne({owner:req.session.passport.user})
+        cart.editCart(req.body.item,req.body.qty)
+        cart.save(err=>{
+            if(err) return next(err)
+            let message = "Changements enregistres"
+            return res.redirect('/cart')
+        })
+    }
+})
 router.post('/addToCart',async (req,res,next)=>{
     if(!req.session.passport){
         return res.redirect('/signin')
@@ -68,7 +70,6 @@ router.get('/signin', (req,res,next)=>{
     }
     return res.render('signin')
 })
-
 router.get('/signup', (req,res,next)=>{
     res.render('signup')
 })
@@ -88,6 +89,10 @@ router.post('/signup',async (req,res,next)=>{
 })
 router.post('/signin', passport.authenticate('local',{successReturnToOrRedirect:'/',
                                                         failureRedirect:'/signin'}))
+router.get('/logout',(req,res,next)=>{
+    req.session.passport = null
+    res.redirect('/')
+})
 router.post('/search',async (req,res,next)=>{
     try {
         let results = await ProductModel.find({name:{$regex:`${req.body.search}`, $options:"i"}})
@@ -96,6 +101,51 @@ router.post('/search',async (req,res,next)=>{
     } catch (e) {
         return next(e)
     }
+})
+router.get('/orders',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    let orders = await OrderModel.find({owner:req.session.passport.user})
+    return res.render('orders',{orders:orders})
+})
+router.get('/order/:orderId',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    let order = await OrderModel.findById(req.params.orderId)
+    await order.populate({path: 'list.product',model:'Product'}).execPopulate()
+    return res.render('order',{order:order})
+})
+router.post('/order',async(req,res,next)=>{
+    if(!req.session.passport.user){
+        return res.redirect('/signin')
+    }else{
+        console.log('------------------------------------- req.body',req.body)
+        let order = new OrderModel()
+        order.owner= req.session.passport.user
+        order.price = req.body.price
+        let item
+        try {
+            req.body.item.forEach((element, i) => {
+                item = {}
+                item.product = req.body.item[i]
+                item.quantity = req.body.qty[i]
+                order.list.push(item)
+            })
+        } catch (e) {
+            item = {}
+            item.product = req.body.item
+            item.quantity = req.body.qty
+            order.list.push(item)
+        } finally {
+            order.save(err=>{
+                if(err) return next(err)
+                return res.redirect(`/order/${order._id}`)
+            })
+        }
+
+
+    }
+})
+
+router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    let user = await UserModel.findById(req.session.passport.user)
+    return res.render('profile',{user:user})
 })
 
 var authorised

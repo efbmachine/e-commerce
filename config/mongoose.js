@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 
 //Requirering all the models
-
+require('../models/order')
 require('../models/cart');
 require('../models/user');
-require('../models/category')
+require('../models/category');
 require('../models/product');
 
 //set up default mongoose connection
