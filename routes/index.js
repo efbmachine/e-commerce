@@ -28,6 +28,11 @@ router.get('/',async(req,res,next)=>{
 
 router.get('/cart',  connectEnsureLogin.ensureLoggedIn('/signin'),async (req,res,next)=>{
     let cart = await CartModel.findOne({owner:req.session.passport.user})
+    if(cart==null){
+        cart = await new CartModel()
+        cart.owner = req.session.passport.user
+        await cart.save()
+    }
     console.log('----------------------- cart:',cart)
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
     // console.log('----------------------- cart:',cart)
@@ -35,7 +40,7 @@ router.get('/cart',  connectEnsureLogin.ensureLoggedIn('/signin'),async (req,res
 
 })
 router.post('/saveCart',async(req,res,next)=>{
-    if(!req.session.passport){
+    if(req.session.passport==null){
         return res.redirect('/signin')
     }else{
         let cart = await CartModel.findOne({owner:req.session.passport.user})
@@ -48,7 +53,7 @@ router.post('/saveCart',async(req,res,next)=>{
     }
 })
 router.post('/addToCart',async (req,res,next)=>{
-    if(!req.session.passport){
+    if(req.session.passport==null){
         return res.redirect('/signin')
     }
     else{
@@ -68,7 +73,7 @@ router.post('/addToCart',async (req,res,next)=>{
 })
 
 router.get('/signin', (req,res,next)=>{
-    if(req.session.passport){
+    if(req.session.passport!=null){
         if(req.session.passport.user)
             return res.redirect('/')
     }
@@ -94,7 +99,8 @@ router.post('/signup',async (req,res,next)=>{
 router.post('/signin', passport.authenticate('local',{successReturnToOrRedirect:'/',
                                                         failureRedirect:'/signin'}))
 router.get('/logout',(req,res,next)=>{
-    req.session = null
+    req.session.passport = null
+    req.session.cart = null
     res.redirect('/')
 })
 router.post('/search',async (req,res,next)=>{
