@@ -19,56 +19,80 @@ router.get('/',async(req,res,next)=>{
             connected = true
         }
     }finally{
-        let category = await CategoryModel.findByName('Alimentaire')
         console.log(req.session)
+        let category = await CategoryModel.findByName('Alimentaire')
         return res.render('index',{category:category[0],connected:connected})
     }
 
 });
 
-router.get('/cart',  connectEnsureLogin.ensureLoggedIn('/signin'),async (req,res,next)=>{
-    let cart = await CartModel.findOne({owner:req.session.passport.user})
-    if(cart==null){
-        cart = await new CartModel()
-        cart.owner = req.session.passport.user
-        await cart.save()
+router.get('/cart',async (req,res,next)=>{
+    let cart
+    //  If logged not in
+    if(req.session.passport==null){
+        // if don't have cart yet
+        if(req.session.cart==null){
+            cart = await new CartModel()
+            req.session.cart = cart._id
+            await cart.save()
+            console.log('saved new cart FROM /CART')
+        }
+        // if have a cart already
+        else{
+            cart = await CartModel.findById(req.session.cart)
+        }
     }
-    console.log('----------------------- cart:',cart)
+    else{
+        cart = await CartModel.findOne({owner:req.session.passport.user})
+    }
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
     // console.log('----------------------- cart:',cart)
     return res.render('cart',{cart:cart})
 
 })
 router.post('/saveCart',async(req,res,next)=>{
-    if(req.session.passport==null){
-        return res.redirect('/signin')
-    }else{
-        let cart = await CartModel.findOne({owner:req.session.passport.user})
-        cart.editCart(req.body.item,req.body.qty)
-        cart.save(err=>{
-            if(err) return next(err)
-            let message = "Changements enregistres"
-            return res.redirect('/cart')
-        })
+    let cart
+    if (req.session.passport!=null) {
+        cart = await CartModel.findOne({owner:req.session.passport.user})
     }
+    else{
+        cart = await CartModel.findById(req.session.cart)
+    }
+    cart.editCart(req.body.item,req.body.qty)
+    cart.save(err=>{
+        if(err) return next(err)
+        let message = "Changements enregistres"
+        return res.redirect('/cart')
+    })
 })
 router.post('/addToCart',async (req,res,next)=>{
+    let cart
+    //  If logged not in
     if(req.session.passport==null){
-        return res.redirect('/signin')
+        // if don't have cart yet
+        if(req.session.cart==null){
+            cart = await new CartModel()
+            req.session.cart = cart._id
+        }
+        // if have a cart already
+        else{
+            cart = await CartModel.findById(req.session.cart)
+        }
     }
+
     else{
         let cart = await CartModel.findOne({owner:req.session.passport.user})
         if(cart==null){
             cart = await new CartModel()
         }
-        // console.log(cart)
-        cart.addProduct(req.body.productId,req.body.quantity)
-        cart.save((err)=>{
+    }
+    // console.log(cart)
+    cart.addProduct(req.body.productId,req.body.quantity)
+    cart.save((err)=>{
             if(err) return next(err)
-            req.session.cartId = cart._id
             return res.redirect('/product/'+req.body.productId)
         })
-    }
+
 
 })
 
@@ -96,8 +120,23 @@ router.post('/signup',async (req,res,next)=>{
         return res.redirect('/')
     })
 })
-router.post('/signin', passport.authenticate('local',{successReturnToOrRedirect:'/',
-                                                        failureRedirect:'/signin'}))
+router.post('/signin', async (req,res,next)=>{
+    return passport.authenticate('local',(err,user,info)=>{
+        if(err) return next(err)
+        if(!user) return res.render('signin',{message:info.message})
+        if(user){
+            req.login(user,(err)=>{
+                if(err) return next(err)
+                return res.redirect('/')
+            })
+        }
+    })(req,res,next)
+    // if(err) return next(err)
+    // if(user==false){
+    //     return res.render('/signin',{message:info.message})
+    // }
+    // return res.redirect('/')
+})
 router.get('/logout',(req,res,next)=>{
     req.session.passport = null
     req.session.cart = null
@@ -123,7 +162,7 @@ router.get('/order/:orderId',connectEnsureLogin.ensureLoggedIn('/signin'),async(
 })
 router.post('/order',async(req,res,next)=>{
     if(!req.session.passport.user){
-        return res.redirect('/signin')
+        return res.render('/signin')
     }else{
         console.log('------------------------------------- req.body',req.body)
         let order = new OrderModel()

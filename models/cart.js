@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
 var cartSchema = new Schema({
-    owner: {type:Schema.Types.ObjectId, ref: 'User',unique:true},
+    owner: {type:Schema.Types.ObjectId, ref: 'User'},
     list: [{
         product:{ type: Schema.Types.ObjectId, ref: 'Product'},
         quantity: {type:Number,min:0,max:20}
@@ -70,6 +70,8 @@ cartSchema.statics.findByUser = function(userId){
         return cart
     })
 }
+
+
 
 var Cart = mongoose.model('Cart',cartSchema)
 
