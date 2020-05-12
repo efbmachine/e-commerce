@@ -1,19 +1,20 @@
 extends clientLayout
 
 block content
-    if(message)
-    .message
-        h4 #{message}
     .container
         h3 Creer un compte
         form(action = "/signup" method = "POST")
             input(name = "name" type = "text" placeholder="Nom\(optional\)")
             br
+            label() +241
+            input(name= 'number' type= 'text' placeholder='Numero de telephone')
+            br
             input(name = "email" type = "email" required placeholder = "Addresse Email")
             br
             input(name = "password" type = "password" required placeholder = "Mot de Passe" minlength=7)
             br
-
+            textarea(name='address' placeholder='Commune\nVille\nQuartier')
+            br
             button(type = "Submit") Sign me up!
             br
             br

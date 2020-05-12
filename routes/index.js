@@ -155,6 +155,7 @@ router.get('/signin', (req,res,next)=>{
     return res.render('signin',{message:req.flash()})
 })
 router.get('/signup', (req,res,next)=>{
+    console.log(req.flash());
     res.render('signup',{message:req.flash()})
 })
 router.post('/signup',async (req,res,next)=>{
@@ -163,7 +164,10 @@ router.post('/signup',async (req,res,next)=>{
         return res.render('signup',{message:req.flash()})
     }
     let user = new UserModel({email:req.body.email,
-                                password:req.body.password})
+                                password:req.body.password,
+                                phoneNumber:req.body.number,
+                                name:req.body.name,
+                                address:req.body.address})
     await user.save()
     console.log(user)
     req.login(user,(err)=>{

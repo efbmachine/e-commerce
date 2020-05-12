@@ -26,7 +26,9 @@ var userSchema = new Schema({
         type: String
     },
     cart: {type:Schema.Types.ObjectId, ref: 'Cart'},
-    orders: [{type:Schema.Types.ObjectId, ref: 'Orders'}]
+    orders: [{type:Schema.Types.ObjectId, ref: 'Orders'}],
+    phoneNumber: String,
+    address: String
 
 
 });

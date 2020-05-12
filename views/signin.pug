@@ -1,12 +1,13 @@
 extends clientLayout
 
 block content
-    
+
     .main
         .signin
             h3 Se Connecter
             form(action = "/signin" method = "POST")
                 input(name = "email" type = "email" required placeholder = "Email Address")
+                br
                 input(name = "password" type = "password" required placeholder = "Password" minlength=7)
                 br
                 br
