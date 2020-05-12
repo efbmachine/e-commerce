@@ -21,10 +21,10 @@ passport.use(new LocalStrategy({
         UserModel.findOne({ email: email }, function (err, user) {
             if (err) { return done(err); }
             if (!user) {
-                return done(null, false, { message: 'Incorrect email.' });
+                return done(null, false, { message: 'Incorrect email or password.' });
             }
             if (!user.authenticate(password)) {
-                return done(null, false, { message: 'Incorrect password.' });
+                return done(null, false, { message: 'Incorrect email or password.' });
             }
             return done(null, user);
         });

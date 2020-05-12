@@ -11,7 +11,7 @@ router.get('/:categoryName/:subcategoryId',async (req,res,next)=>{
     try {
         let cat = await CategoryModel.findByName(req.params.categoryName)
         let subcat = await cat[0].getSubCategory(req.params.subcategoryId)
-        return res.render('subcategory',{subCat:subcat})
+        return res.render('subcategory',{message:req.flash(),subCat:subcat})
 
     } catch (e) {
         return res.status(404).render('error',{message:"Could not find category or subcategory",error:e})

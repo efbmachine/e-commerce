@@ -10,6 +10,18 @@ html
   include partials/head
   body
 
+    if(message)
+        if(message.success)
+            .msg-success
+                h1= message.success
+        if(message.info)
+            .message
+                h1= message.info
+        if(message.error)
+            .msg-error
+                h1= message.error
+
+
     block content
 
 

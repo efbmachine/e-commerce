@@ -5,7 +5,7 @@ var cartSchema = new Schema({
     owner: {type:Schema.Types.ObjectId, ref: 'User'},
     list: [{
         product:{ type: Schema.Types.ObjectId, ref: 'Product'},
-        quantity: {type:Number,min:0,max:20}
+        quantity: {type:Number,min:0}
     }]
 })
 
@@ -59,7 +59,7 @@ cartSchema.methods.removeProduct = (product,quantity=1)=>{
     //     this.list.splice(index, 1);
     // }
 }
-cartSchema.methods.empty = ()=>{
+cartSchema.methods.empty = function(){
     this.list = []
 }
 

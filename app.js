@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
 var session = require('express-session');
+var flash = require('req-flash');
 require('./config/mongoose');
 var passport = require('./config/passport');
 
@@ -40,6 +41,7 @@ app.use(session({
     }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);

@@ -8,6 +8,25 @@ body {
     justify-content:center;
     align-items: center;
 }
+
+.message{
+    border-radius: 10px;
+    background-color: LightGrey;
+    padding: 10px;
+    margin:5px
+}
+.msg-success{
+    border-radius: 10px;
+    background-color: LightGreen;
+    padding: 10px;
+    margin:5px
+}
+.msg-error{
+    border-radius: 10px;
+    background-color: LightCoral;
+    padding: 10px;
+    margin:5px
+}
 .border{
     width:100%;
     margin-left:5%;

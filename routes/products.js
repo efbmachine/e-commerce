@@ -11,7 +11,7 @@ router.get('/:productId/', async (req,res,next)=>{
     try{
         let product = await ProductModel.findById(req.params.productId)
         console.log(product)
-        return res.render('product',{product:product})
+        return res.render('product',{message:req.flash(),product:product})
     }catch(err){
         return next(err)
     }
