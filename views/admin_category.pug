@@ -1,13 +1,7 @@
 extends layout
 
 block content
-    include partials/nav
-    br
-    h3 Admin page
-    hr
-    br
-    include partials/sidenav
-    .main
+
         h1= category.name
         - var catPath = `/admin/category/${category._id}`
         .titleButton

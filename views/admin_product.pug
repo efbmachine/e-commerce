@@ -1,13 +1,7 @@
 extends layout
 
 block content
-    include partials/nav
-    br
-    h3 Admin page
-    hr
-    br
-    include partials/sidenav
-    .main
+    
         .blah
             h3= product.name
             - var path = `/admin/product/${product._id}`

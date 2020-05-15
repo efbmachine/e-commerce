@@ -10,17 +10,23 @@ var cartSchema = new Schema({
 })
 
 cartSchema.methods.addProduct = async function (productId,quantity=1){
-    let done = false
-    await this.list.forEach((item, i) => {
-        if(item.product==productId){
-            let temp = Number(this.list[i].quantity) + Number(quantity)
-            console.log('----------------------------------- update:',temp)
-            this.list[i].quantity = temp
-            done = true
-            return true
-        }
-    });
-    if(!done){
+    let found = false
+    if(!found){
+        console.log(productId)
+        console.log(typeof(productId))
+        await this.list.forEach((item, i) => {
+            console.log(item.product)
+            console.log(typeof(item.product));
+            if(item.product==productId||isEquivalent(productId,item.product)){
+                let temp = Number(this.list[i].quantity) + Number(quantity)
+                console.log('----------------------------------- update:',temp)
+                this.list[i].quantity = temp
+                found = true
+                return true
+            }
+        })
+    }
+    if(!found){
         console.log('------------------------------- create:',)
         let item = {}
         item.product= productId
@@ -62,15 +68,44 @@ cartSchema.methods.removeProduct = (product,quantity=1)=>{
 cartSchema.methods.empty = function(){
     this.list = []
 }
-
-cartSchema.statics.findByUser = function(userId){
-    this.find({owner:userId},(err,cart)=>{
-        console.log(cart)
-        if(err) return next(err)
-        return cart
-    })
+cartSchema.methods.fuseWith = function(cart){
+    console.log('fusing with')
+    cart.list.forEach( (item, i) => {
+        console.log('round #'+i);
+        console.log(item.product,' times ',item.quantity)
+        this.addProduct(item.product,item.quantity)
+    });
 }
 
+cartSchema.statics.findByUser = async function(userId){
+    return await this.findOne({owner:userId})
+}
+
+function isEquivalent(a, b) {
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+    // If number of properties is different,
+    // objects are not equivalent
+
+    console.log('--------------a----------------')
+    console.log('id' ,a['id'])
+    console.log('-------------b-----------------')
+    console.log('id ',b['id'])
+    console.log('--------------------------------');
+    // If values of same property are not equal,
+    // objects are not equivalent
+    if(a['id']!=undefined && b['id']!=undefined){
+        if (a['id'].equals(b["id"])) {
+            console.log('id same');
+            return true;
+        }
+    }
+
+    // If we made it this far, objects
+    // are considered equivalent
+    return false;
+}
 
 
 var Cart = mongoose.model('Cart',cartSchema)

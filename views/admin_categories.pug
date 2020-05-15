@@ -1,25 +1,18 @@
 extends layout
 
 block content
-    include partials/nav
-    br
-    h3 Admin page
+    if(title)
+        h3= (title)
+    else
+        h3 Categories
+    .titleButton
+        a(href='/admin/category/create')
+            button.btn.btn-success(type='button') Nouvelle Categorie
+
     hr
-    br
-    include partials/sidenav
-    .main
-        if(title)
-            h3= (title)
-        else
-            h3 Categories
-        .titleButton
-            a(href='/admin/category/create')
-                button.btn.btn-success(type='button') Nouvelle Categorie
 
-        hr
-
-        .flex-container
-            each cat in cats
-                a(href='/admin/category/'+cat._id)
-                    .product
-                        p= cat.name
+    .flex-container
+        each cat in cats
+            a(href='/admin/category/'+cat._id)
+                .product
+                    p= cat.name

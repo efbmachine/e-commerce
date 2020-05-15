@@ -21,7 +21,7 @@ router.get('/',async(req,res,next)=>{
     }finally{
         console.log(req.session)
         let category = await CategoryModel.findByName('Alimentaire')
-        return res.render('index',{message:req.flash('info'),category:category[0],connected:connected})
+        return res.render('index',{message:req.flash(),category:category[0],connected:connected})
     }
 
 });
@@ -46,12 +46,12 @@ router.get('/cart',async (req,res,next)=>{
         cart = await CartModel.findOne({owner:req.session.passport.user})
         if(cart==null){
             cart = await new CartModel()
-            cart.owner = req.session.passport.usersRouter
+            cart.owner = req.session.passport.user
             await cart.save(err=>{
                 if(err) return next(err)
             })
         }
-        console.log('get cart 4 user; cart:',cart)
+        console.log('get cart 4 user')
     }
     console.log(cart)
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
@@ -70,7 +70,7 @@ router.post('/saveCart',async(req,res,next)=>{
     cart.editCart(req.body.item,req.body.qty)
     cart.save(err=>{
         if(err) return next(err)
-        let message = "Changements enregistres"
+        req.flash('success',"Changements enregistres")
         return res.redirect('/cart')
     })
 })
@@ -170,24 +170,48 @@ router.post('/signup',async (req,res,next)=>{
                                 address:req.body.address})
     await user.save()
     console.log(user)
-    req.login(user,(err)=>{
+    req.login(user,async (err)=>{
         if(err) return next(err)
+        if(req.session.cart != null){
+            let cart = await CartModel.findById(req.session.cart)
+            if(cart!=null){
+                cart.owner = user._id
+                cart.save()
+            }
+        }
         return res.redirect('/')
     })
 })
 router.post('/signin', async (req,res,next)=>{
     return passport.authenticate('local',(err,user,info)=>{
         if(err) return next(err)
-        console.log('info:         ',info)
         if(info!=null)
             req.flash('info',info.message)
 
-            console.log('post /sign -------------',req.flash())
             if(!user) return res.redirect('/signin')
             if(user){
-                req.login(user,(err)=>{
-                    if(err) return next(err)
-                    return res.redirect('/')
+                req.login(user,async (err)=>{
+                    if(req.session.cart == null){
+                        req.flash('info',`Bonjour, ${user.name}`)
+                        return res.redirect('/')
+                    }
+                    else{
+                        let cart = await CartModel.findOne({owner:user._id})
+                        if (cart == null){
+                            cart = await CartModel.findById(req.session.cart)
+                            cart.owner = user._id
+                        }
+                        else if(cart!=null){
+                            let temp = await CartModel.findById(req.session.cart)
+                            await cart.fuseWith(temp)
+                            temp.remove()
+                        }
+                        cart.save(err=>{
+                            if(err) return next(err)
+                            return res.redirect('/')
+
+                        })
+                    }
                 })
             }
 
@@ -222,49 +246,68 @@ router.get('/order/:orderId',connectEnsureLogin.ensureLoggedIn('/signin'),async(
     return res.render('order',{order:order,message:req.flash()})
 })
 router.post('/order',async(req,res,next)=>{
-    if(!req.session.passport.user){
+    if(req.session.passport!=null){
+        if(req.session.passport.user==null){
+            req.flash('info','Creez un compte ou connectez vous afin de commander')
+            return res.redirect('/signin')
+        }
+        else{
+            let cart = await CartModel.findOne({owner:req.session.passport.user})
+            console.log('--------------------------- usercart: ',cart)
+            if(cart!=null){
+                cart.empty()
+                cart.save()
+            }
+            console.log('------------------------------------- req.body',req.body)
+            let order = new OrderModel()
+            order.owner= req.session.passport.user
+            order.price = req.body.price
+            let item
+            try {
+                req.body.item.forEach((element, i) => {
+                    item = {}
+                    item.product = req.body.item[i]
+                    item.quantity = req.body.qty[i]
+                    order.list.push(item)
+                })
+            } catch (e) {
+                item = {}
+                item.product = req.body.item
+                item.quantity = req.body.qty
+                order.list.push(item)
+            } finally {
+                order.save(err=>{
+                    if(err) return next(err)
+                    return res.redirect(`/order/${order._id}`)
+                })
+            }
+        }
+    }else{
         req.flash('info','Creez un compte ou connectez vous afin de commander')
         return res.redirect('/signin')
-    }else{
-        console.log('------------------------------------- req.body',req.body)
-        let order = new OrderModel()
-        order.owner= req.session.passport.user
-        order.price = req.body.price
-        let item
-        try {
-            req.body.item.forEach((element, i) => {
-                item = {}
-                item.product = req.body.item[i]
-                item.quantity = req.body.qty[i]
-                order.list.push(item)
-            })
-        } catch (e) {
-            item = {}
-            item.product = req.body.item
-            item.quantity = req.body.qty
-            order.list.push(item)
-        } finally {
-            order.save(err=>{
-                if(err) return next(err)
-                return res.redirect(`/order/${order._id}`)
-            })
-        }
-
 
     }
 })
 
 
-// router.get('/test', function(req,res,next) {
-//     req.flash('successMessage', 'You are successfully using req-flash');
-//     req.flash('errorMessage', 'No errors, you\'re doing fine');
-//
-//     res.redirect('/testing');
-// });
-//
-// router.get('/testing', function(req,res,next) {
-//     res.send(req.flash());
-// });
+router.get('/test', function(req,res,next) {
+    console.log(req.body)
+    req.flash('successMessage', 'You are successfully using req-flash');
+    req.flash('errorMessage', 'No errors, you\'re doing fine');
+
+    res.redirect('/testing');
+});
+
+router.post('/test',function(req,res,next){
+    console.log(req.body)
+    req.flash('success','Commande modifiee avec succes')
+    res.status(200)
+    res.json({name:'blah blah'})
+})
+
+router.get('/testing', function(req,res,next) {
+    res.send(req.flash());
+});
 
 router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let user = await UserModel.findById(req.session.passport.user)

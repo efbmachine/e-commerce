@@ -3,6 +3,7 @@ var router = express.Router();
 
 var category_controller = require('../controllers/categoryController')
 var product_controller = require('../controllers/productController')
+var order_controller = require('../controllers/orderController')
 
 /* GET home page. */
 router.get('/',(req,res,next)=>{
@@ -26,6 +27,10 @@ router.post('/category/:categoryId/edit',category_controller.edit)
 router.get('/category/:categoryId/:subcategoryId',category_controller.showSubcategory)
 router.get('/category/:categoryId/:subcategoryId/delete',category_controller.deleteSubcategory)
 
+
+router.get('/orders',order_controller.getAll)
+router.get('/order/:orderId',order_controller.getOne)
+router.post('/order/:orderId/edit',order_controller.editOne)
 // router.post('/edit/:category',category_controller.edit)
 router.get('/categories/deleteAll', category_controller.deleteAll)
 router.get('/products/deleteAll', product_controller.deleteAll)

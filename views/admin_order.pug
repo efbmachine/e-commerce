@@ -1,0 +1,71 @@
+extends layout
+
+block content
+    h2= 'Commande #'+order._id
+    hr
+    .container-fluid
+        h3 Produits
+        .container
+            each item,index in order.list
+                .row
+                    .flex-container
+                        a(href='/product/'+item.product._id)
+                            p= item.product.name
+                        .blah
+                            p= '('+item.product.price +'Fcfa  X  '+  item.quantity +')'
+        .info1
+            p= 'Prix Total:' + order.price + 'Fcfa'
+        hr
+        .info2.form-group
+            label(for='status') Status de commande
+            select(id='status' onChange="updateStatus()").form-control
+                option(value='traitement' id='processing') En Traitement
+                option(value='preparation' id='preparing') En Preparation
+                option(value='livraison' id='delivering') En cour de livraison
+                option(value='livree' id='delivered') Livree
+
+
+        script.
+
+            var orderId = '#{order._id}'
+            var orderState = '#{order.state}'
+            async function updateStatus() {
+                console.log('updating Status')
+                url = 'http://localhost:3000/admin/order/'+orderId+'/edit'
+                let x = document.getElementById('status')
+                data={
+                    orderId: orderId,
+                    state: x.value}
+                let res = await fetch(url, {
+                    method: 'POST',
+                    mode: 'same-origin',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json'
+
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify(data)});
+                console.log(res.status)
+                let response = await res.json()
+                let msg = document.getElementById('informative')
+                msg.className = 'msg-success'
+                msg.innerHTML = '<h5>Commande modifiee avec success</h5>'
+                console.log(msg)
+
+                console.log(response.name)}
+
+            function selection(){
+                console.log(orderState)
+                let sel = document.getElementById('status')
+                let opts = sel.options
+                for(var opt, j=0; opt=opts[j];j++){
+                    if(opt.value == orderState){
+                        sel.selectedIndex = j
+                        break
+                    }
+                }
+            }
+            selection()

@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    h1 Commandes
+    .container-fluid
+        each order in orders
+            .row
+                .flex-container.border
+                    .info1
+                        a(href='/admin/order/'+order._id)
+                            p= '#' + order._id
+                            p= 'Prix: '+  order.price + "Fcfa"
+                            p= 'Date:' + order.date
+                    .info2
+                        p= 'Status:' + order.state

@@ -1,13 +1,6 @@
 extends layout
 
 block content
-    include partials/nav
-    br
-    h3 Admin page
-    hr
-    br
-    include partials/sidenav
-    .main
         if(title)
             h3= (title)
         else
@@ -22,7 +15,7 @@ block content
                 input(type='text', placeholder='Search..', name='search')
                 button(type='submit')
                     i.fa.fa-search
-        
+
         hr
         .flex-container
             each product in products

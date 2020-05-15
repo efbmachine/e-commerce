@@ -12,10 +12,13 @@ var orderSchema = new Schema({
     state:String
 })
 orderSchema.pre('save',async function(req,res,next){
-    if(this.date ==null){
-        let date = toDMY(new Date)
-        this.date = date
+    console.log('settinng up order')
+    if(this.date == null){
+        console.log('setting up date');
+        this.date = toDMY(new Date)
+        console.log(this.date);
     }if(this.state==null){
+        console.log('setting up state');
         this.state = "En Traitement"
     }
 })
