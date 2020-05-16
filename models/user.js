@@ -48,8 +48,12 @@ userSchema.methods.hashPassword = function(password) {
     return crypto.pbkdf2Sync(password, this.salt, 10000,64,'sha1').toString('base64');
 };
 
-userSchema.methods.authenticate = function(password) {
-    return this.password === this.hashPassword(password);
+userSchema.methods.authenticate = async function(password) {
+    console.log('authenticating');
+    // console.log(this.password)
+    let temp = await this.hashPassword(password)
+// hconsole.log(temp)
+    return this.password === temp;
 };
 
 userSchema.statics.exists = async function(email) {
