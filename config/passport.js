@@ -4,13 +4,21 @@ var passport = require('passport'),
 
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id,user.cart);
+    console.log('calling serialize')
+    done(null, {id:user.id,cart:user.cart});
 });
 
-passport.deserializeUser(function(id, done) {
-  UserModel.findById(id, function(err, user) {
+passport.deserializeUser(async function(values, done) {
+    console.log('calling deserialise');
+    let user =  await UserModel.findById(values.id);
+    let err = null
+    if(user==null){
+        err = new Error('No user exists')
+    }
+    console.log('user.cart= ',user.cart)
+    await user.populate('cart').execPopulate()
+    console.log('user.cart=   ',user.cart)
     done(err, user);
-  });
 });
 
 passport.use(new LocalStrategy({
@@ -18,7 +26,8 @@ passport.use(new LocalStrategy({
     passwordField:'password'
     },
     function(email, password, done) {
-        UserModel.findOne({ email: email }, function (err, user) {
+        console.log('loggin in')
+        UserModel.findOne({ email: email },async function (err, user) {
             if (err) { return done(err); }
             if (!user) {
                 return done(null, false, { message: 'Incorrect email or password.' });

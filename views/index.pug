@@ -7,7 +7,7 @@ block content
                 p
                     b Bienvenue :)
                 p Commandez vos aliments favoris et faites vous livrer a DOMICILE
-                a(href='/signin')
+                a#signin(href='/signin')
                     button#connect.btn.btn-primary(type='button')
                         |Je me connecte
 
@@ -25,12 +25,11 @@ block content
                                 .box
                                     p= subCat.name
     script.
-        connected=#{connected}
-        if(connected==true){
+        console.log('shittttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt')
+        let connected = `#{connected}`
+        if(connected == "true"){
             var x = document.getElementById("connect");
-            x.remove()
-            var y = document.getElementById('shoppingCart')
-            var child = document.createElement('div')
-            child.innerHTML = items
-            y.appendChild(child)
+            x.innerHTML = 'Je me deconnecte'
+            var y = document.getElementById('signin')
+            y.href = '/logout'
         }

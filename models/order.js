@@ -4,12 +4,12 @@ var Schema = mongoose.Schema;
 var orderSchema = new Schema({
     owner: {type:Schema.Types.ObjectId, ref: 'User'},
     list: [{
-        product:{ type: Schema.Types.ObjectId, ref: 'Product' ,unique:true},
+        product:{ type: Schema.Types.ObjectId, ref: 'Product'},
         quantity: {type:Number,min:0,max:20}
     }],
     price:Number,
-    date:Date,
-    state:String
+    date:{type:Date,default:(new Date)},
+    state:{type:String,default:'traitement'}
 })
 orderSchema.pre('save',async function(req,res,next){
     console.log('settinng up order')

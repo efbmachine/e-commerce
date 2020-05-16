@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 
 //Requirering all the models
 require('../models/order')
-require('../models/cart');
 require('../models/user');
+require('../models/cart');
 require('../models/category');
 require('../models/product');
 

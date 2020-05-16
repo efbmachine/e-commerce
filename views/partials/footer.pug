@@ -1,3 +1,37 @@
+script.
+
+    cartId = `#{cart}`
+    console.log('empty',cartId)
+    getNumberItem(`${cartId}`)
+
+
+    async function getNumberItem(cart) {
+        console.log('from get number',cart)
+        url = `http://localhost:3000/getCart/${cart}`
+        let res = await fetch(url, {
+            method: 'GET',
+            mode: 'same-origin',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json'
+
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            });
+        console.log(res.status)
+        let response = await res.json()
+        console.log(response.number)
+        cart = document.getElementById('shopCartNumber')
+        cart.innerHTML = response.number
+
+        console.log(response.name)
+    }
+
+
+
+
 // Optional JavaScript
 // jQuery first, then Popper.js, then Bootstrap JS
 script(src='https://code.jquery.com/jquery-3.4.1.slim.min.js', integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n', crossorigin='anonymous')

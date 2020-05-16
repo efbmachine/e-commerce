@@ -1,5 +1,3 @@
-var CartModel = require('mongoose').model('Cart');
-
 var mongoose = require('mongoose'),
     crypto = require('crypto'),
     Schema = mongoose.Schema;
@@ -38,18 +36,14 @@ userSchema.pre('save',async function(next){
     this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
     this.password = this.hashPassword(this.password);
     console.log('done pre save user')
-    let cart = new CartModel()
-    cart.owner = this._id
-    cart.save()
-    this.cart = cart._id
     next();
 });
 
-userSchema.methods.addToCart = async function(product){
-    let cart = await CartModel.findById(req.session.passport.user)
-    cart.addProduct(product)
-    cart.save()
-}
+// userSchema.methods.addToCart = async function(product){
+//     let cart = await CartModel.findById(req.session.passport.user)
+//     cart.addProduct(product)
+//     cart.save()
+// }
 userSchema.methods.hashPassword = function(password) {
     return crypto.pbkdf2Sync(password, this.salt, 10000,64,'sha1').toString('base64');
 };
