@@ -1,12 +1,10 @@
 script.
 
     cartId = `#{cart}`
-    console.log('empty',cartId)
     getNumberItem(`${cartId}`)
 
 
     async function getNumberItem(cart) {
-        console.log('from get number',cart)
         url = `http://glovo241.herokuapp.com/getCart/${cart}`
         let res = await fetch(url, {
             method: 'GET',
