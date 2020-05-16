@@ -31,7 +31,7 @@ block content
             var orderState = '#{order.state}'
             async function updateStatus() {
                 console.log('updating Status')
-                url = 'http://localhost:3000/admin/order/'+orderId+'/edit'
+                url = 'https://glovo241.herokuapp.com/admin/order/'+orderId+'/edit'
                 let x = document.getElementById('status')
                 data={
                     orderId: orderId,
