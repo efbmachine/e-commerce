@@ -4,15 +4,15 @@
             a.navbar-brand(href='/')
                 img.logo(src='/images/kiw.jpeg')
                 |    Glovo241
+        .rayon
+            button.btn-primary(type='button' onclick='fillDisplayCategories()') Rayons
+
         .shoppingCart
             a(href='/cart')
                 button.btn(type='button')
                     i.fa.fa-shopping-cart.fa-3x
                     #shopCartNumber
                         p 0
-
-        .rayon
-            button.btn(type='button' onclick='fillDisplayCategories()') Rayons
 
         .profile
             a(href='/profile')
