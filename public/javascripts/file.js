@@ -3,7 +3,7 @@ let local = 'http://localhost:3000'
 
 
 async function getNumberItem(cart) {
-    url = `${local}/getCart/${cart}`
+    url = `${urlBase}/getCart/${cart}`
     let res = await get(url)
     let response = await res.json()
     console.log(response.number)
@@ -56,7 +56,7 @@ async function fillDisplayCategories(){
         div.className = ''
         return 'done'
     }
-    let cat = await get(`${local}/api/getCat/Alimentaire`)
+    let cat = await get(`${urlBase}/api/getCat/Alimentaire`)
     let result = await cat.json()
     console.log('result:',result)
     div.className = 'selection'
