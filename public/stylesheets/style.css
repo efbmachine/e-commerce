@@ -2,18 +2,30 @@ body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     z-index: -1;
 }
+.bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
+    align-items: center;
+    z-index: 9999;
 
+}
+.search-container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
 .shoppingCart{
     position:relative;
-    text-align: center;
     color: white
 }
 #shopCartNumber{
     position:absolute;
     font-size: 20px;
     font-weight: bold;
-    right:35%;
-    top:21%
+    top:12px;
+    left:35px;
+    color:white
 }
 .maxTotal{
     display: flex;

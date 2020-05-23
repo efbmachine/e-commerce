@@ -155,6 +155,12 @@ router.post('/emptyCart',async (req,res,next)=>{
             return res.redirect('/cart')
         })
 })
+router.get('/api/getCat/:catName',async(req,res,next)=>{
+    let category = await CategoryModel.findOne({name:'Alimentaire'},{'subCats.name':1, 'subCats._id':1})
+    console.log(category)
+    res.status(200)
+    return res.json({subcats:category.subCats})
+})
 router.get('/getCart/:cartId',async(req,res,next)=>{
     let cart
     try {
@@ -306,6 +312,7 @@ router.post('/order',async(req,res,next)=>{
     if(req.session.passport!=null){
         if(req.session.passport.user.id==null){
             req.flash('info','Creez un compte ou connectez vous afin de commander')
+            req.session.redirectTo = '/cart'
             return res.redirect('/signin')
         }
         else{
@@ -341,6 +348,7 @@ router.post('/order',async(req,res,next)=>{
         }
     }else{
         req.flash('info','Creez un compte ou connectez vous afin de commander')
+        req.session.redirectTo = '/cart'
         return res.redirect('/signin')
 
     }

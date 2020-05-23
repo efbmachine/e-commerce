@@ -1,25 +1,27 @@
 .container-fluid.mainNav
-
-    nav.navbar.navbar-expand-md.navbar-light.bg-light
-        a.navbar-brand(href='/')
-            img.logo(src='/images/kiw.jpeg')
-            |    Glovo241
-        button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
-            span.navbar-toggler-icon
-        #navbarSupportedContent.collapse.navbar-collapse
-            ul.navbar-nav.mr-auto
-            form(action='/search' method = 'POST')
-                .input-group.mb-3
-                    input.form-control(name='search', type='text', placeholder="lait")
-                    .input-group-append
-                        button.btn.btn-outline-secondary(type='submit')
-                            i.fa.fa-search
-            a.nav-link(href='#')
-                i.fa.fa-heart.fa-3x
-            a.nav-link(href='/profile')
-                i.fa.fa-user.fa-3x
-            .shoppingCart#shoppingCart
-                a.nav-link(href='/cart')
+    .bar
+        .title
+            a.navbar-brand(href='/')
+                img.logo(src='/images/kiw.jpeg')
+                |    Glovo241
+        .shoppingCart
+            a(href='/cart')
+                button.btn(type='button')
                     i.fa.fa-shopping-cart.fa-3x
-                #shopCartNumber
-                    p 0
+                    #shopCartNumber
+                        p 0
+
+        .rayon
+            button.btn(type='button' onclick='fillDisplayCategories()') Rayons
+
+        .profile
+            a(href='/profile')
+                button.btn(type='button')
+                    i.fa.fa-user.fa-3x
+
+
+    .search-container
+        form(action='/search' method='POST')
+            input(type='text', placeholder='Recherche..', name='search')
+            button(type='submit')
+                i.fa.fa-search

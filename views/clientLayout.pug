@@ -21,10 +21,15 @@ html
             .msg-error
                 h1= message.error
 
-
+    #displayCategories
     block content
 
 
+script(src='/javascripts/file.js')
+script.
+
+    cartId = `#{cart}`
+    getNumberItem(`${cartId}`)
 
 
-    include partials/footer
+include partials/footer

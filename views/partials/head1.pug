@@ -1,26 +1,22 @@
 .container-fluid.mainNav
-    .row
-        .col-sm-3
-            .logo
-                h1 Glovo241
-        .col-sm-7
-            form.form-inline.my-2.my-lg-0
-                input.form-control.mr-sm-2(type='search', placeholder='Search', aria-label='Search')
-                button.btn.btn-outline-secondary(type='button')
-                    i.fa.fa-search
-        .col-sm-1
-            button.btn(type='button')
-                i.fa.fa-shopping-cart
-        .col-sm-1
-            button.btn(type='button')
-                i.fa.fa-user
-
-
-                
-                li.nav-item.dropdown
-                    a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Rayon
-                    .dropdown-menu(aria-labelledby='navbarDropdown')
-                        a.dropdown-item(href='#') Action
-                        a.dropdown-item(href='#') Another action
-                        .dropdown-divider
-                        a.dropdown-item(href='#') Something else here
+    nav.navbar.navbar-expand-md.navbar-light.bg-light
+        .shoppingCart#shoppingCart
+            a.nav-link(href='/cart')
+                i.fa.fa-shopping-cart.fa-3x
+            #shopCartNumber
+                p 0
+        a.navbar-brand(href='/')
+            img.logo(src='/images/kiw.jpeg')
+            |    Glovo241
+        button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+        #navbarSupportedContent.collapse.navbar-collapse
+            ul.navbar-nav.mr-auto
+            form(action='/search' method = 'POST')
+                .input-group.mb-3
+                    input.form-control(name='search', type='text', placeholder="lait")
+                    .input-group-append
+                        button.btn.btn-outline-secondary(type='submit')
+                            i.fa.fa-search
+            a.nav-link(href='/profile')
+                i.fa.fa-user.fa-3x
