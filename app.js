@@ -6,6 +6,7 @@ var logger = require('morgan');
 var fileUpload = require('express-fileupload');
 var session = require('express-session');
 var flash = require('req-flash');
+var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS
 require('./config/mongoose');
 var passport = require('./config/passport');
 
@@ -27,6 +28,7 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
