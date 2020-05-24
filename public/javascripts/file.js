@@ -19,7 +19,7 @@ async function get(url){
 
     return await fetch(url,{
         method: 'GET',
-        mode: 'same-origin',
+        mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
@@ -34,10 +34,10 @@ async function get(url){
 async function post(url,data){
 
     return await fetch(url,{
-        method: 'POST',
-        mode: 'same-origin',
-        cache: 'no-cache',
-        credentials: 'same-origin',
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omi
         headers: {
             'Content-Type': 'applicatio/json'
         },
