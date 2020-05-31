@@ -8,7 +8,7 @@ var orderSchema = new Schema({
         quantity: {type:Number,min:0,max:20}
     }],
     price:Number,
-    date:{type:Date,default:(new Date)},
+    date:{type:Date,default: (new Date)},
     state:{type:String,default:'traitement'}
 })
 orderSchema.pre('save',async function(req,res,next){
@@ -25,6 +25,7 @@ orderSchema.pre('save',async function(req,res,next){
 var Order = mongoose.model('Order',orderSchema)
 
 var toDMY = (date)=>{
+    console.log('changing date format')
     return date.getDate()+'/' +date.getMonth()+1 +'/'+date.getFullYear()
 }
 

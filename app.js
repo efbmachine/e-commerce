@@ -42,12 +42,12 @@ app.use((req, res, next) => {
 
 app.use(session({
     secret: 'keyboard screen glass',
-    // resave: true,
-    // saveUninitialized: true,
-    // cookie: {
-    //     secure: true,
-    //     maxAge: 15*60*1000
-    // }
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: true,
+        maxAge: 15*60*1000
+    }
     }));
 app.use(passport.initialize());
 app.use(passport.session());

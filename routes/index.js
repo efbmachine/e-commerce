@@ -300,7 +300,7 @@ router.post('/search',async (req,res,next)=>{
     }
 })
 router.get('/orders',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
-    let orders = await OrderModel.find({owner:req.session.passport.user.id})
+    let orders = await OrderModel.find({owner:req.session.passport.user.id}).sort({_id:-1})
     return res.render('orders',{message:req.flash(), orders:orders,cart:req.session.passport.user.cart})
 })
 router.get('/order/:orderId',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
