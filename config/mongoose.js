@@ -6,11 +6,12 @@ require('../models/user');
 require('../models/cart');
 require('../models/category');
 require('../models/product');
+require('../models/tag')
 
 //set up default mongoose connection
 var realMDB = 'mongodb+srv://webApp:NJtXnDLb46XKeak@cluster0-fizxw.mongodb.net/glovo241?retryWrites=true&w=majority'
 var local = 'mongodb://localhost:27017/test'
-mongoose.connect(realMDB, {useUnifiedTopology:true, useNewUrlParser:true});
+mongoose.connect(local, {useUnifiedTopology:true, useNewUrlParser:true});
 console.log('gucci gang');
 //get the default connection
 var db = mongoose.connection;

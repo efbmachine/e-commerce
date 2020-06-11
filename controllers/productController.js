@@ -2,6 +2,7 @@ var path = require('path')
 var AWS = require('aws-sdk')
 var ProductModel = require('mongoose').model('Product');
 var CategoryModel = require('mongoose').model('Category');
+var TagModel = require('mongoose').model('Tag');
 
 
 
@@ -137,10 +138,13 @@ exports.edit =   (req,res,next)=>{
 }
 
 exports.renderAddProduct = (req,res,next)=>{
-    CategoryModel.find({},{name:1, subCats:1},(err,cats)=>{
+    CategoryModel.find({},{name:1, subCats:1},async (err,cats)=>{
         if(err) return next(err)
+        //let tags = await TagModel.getAll()
+        let tags = ['caffe','produit laitier']
+        // console.log('tags: ',tags)
         // console.log('cats: ', cats)
-        res.render('newProduct', {categories:cats})
+        res.render('newProduct', {categories:cats, tags:JSON.stringify(tags)})
     })
 }
 
