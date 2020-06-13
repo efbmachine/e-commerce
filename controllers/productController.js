@@ -133,10 +133,11 @@ exports.addProduct =  (req,res,next)=>{
     };
 
     // Uploading files to the bucket
+    console.log('about to upload picture');
     s3.upload(params, function(err, data) {
-        if (err) { next(err);}
-       console.log(`File uploaded successfully. ${data.Location}`);
-         console.log('bout to save product')
+        if (err) { return next(err);}
+        console.log(`File uploaded successfully. ${data.Location}`);
+
          // image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
          //     if(err) return next(err)
          // })
@@ -151,6 +152,7 @@ exports.addProduct =  (req,res,next)=>{
                                      });
          product.save((err,data)=>{
              if(err) return next(err);
+             console.log('saved product')
              // // console.log('data: ',data)
              return res.redirect(`/admin/product/${data._id}`);
          })
