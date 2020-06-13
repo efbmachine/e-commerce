@@ -4,7 +4,7 @@ var router = express.Router();
 var category_controller = require('../controllers/categoryController')
 var product_controller = require('../controllers/productController')
 var order_controller = require('../controllers/orderController')
-
+var TagModel = require('mongoose').model('Tag')
 /* GET home page. */
 router.get('/',(req,res,next)=>{
     res.render('admin')
@@ -35,10 +35,16 @@ router.post('/order/:orderId/edit',order_controller.editOne)
 router.get('/categories/deleteAll', category_controller.deleteAll)
 router.get('/products/deleteAll', product_controller.deleteAll)
 
-router.get('/getTags',(req,res,next)=>{
+router.get('/getTags',async (req,res,next)=>{
     console.log('getting tags')
-    let array = ['caffe','produit laitier','alcool']
-    res.send(array)
+    let result = await TagModel.getAll()
+    console.log(result);
+    res.send(result)
+})
+router.get('/deleteTags',async (req,res,next)=>{
+    console.log('deleting tags')
+    let result = await TagModel.remove({})
+    console.log(result);
 })
 
 // router.get('/',product_controller.getCategories)

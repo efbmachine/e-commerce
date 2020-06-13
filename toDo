@@ -19,11 +19,11 @@ Not started:
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
-        -create tags on Submit
-        -get tags from tags table
+
+        -implement search by tags
         -put autocomplete on editProduct
         -put tags on client index
-        -
+        -manage tags
         )
     -
 
@@ -33,4 +33,5 @@ ________________________________________________________________________________
 Completed:
     -(whats app) phone number required
     -Description on top of box instead of side
-    -
+    -create tags on Submit
+    -get tags from tags table

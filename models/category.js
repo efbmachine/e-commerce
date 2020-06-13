@@ -49,6 +49,9 @@ categorySchema.methods.getSubCategory= async function(id){
     }
 
 }
+categorySchema.methods.hasProduct= async function(product){
+    // TO COMPLETE
+}
 
 var Category = mongoose.model('Category',categorySchema)
 

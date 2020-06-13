@@ -5,8 +5,9 @@ require('../models/order')
 require('../models/user');
 require('../models/cart');
 require('../models/category');
+require('../models/tag');
 require('../models/product');
-require('../models/tag')
+
 
 //set up default mongoose connection
 var realMDB = 'mongodb+srv://webApp:NJtXnDLb46XKeak@cluster0-fizxw.mongodb.net/glovo241?retryWrites=true&w=majority'

@@ -55,6 +55,7 @@ exports.edit =   (req,res,next)=>{
         product.name = req.body.name
         product.description = req.body.description
         product.price = req.body.price
+        product.tags = req.body.tags
 
         var cat = req.body.category.split('.',2),
             category = cat[0],
@@ -62,6 +63,7 @@ exports.edit =   (req,res,next)=>{
         product.category = category
         var oldSubcat = product.subCat
         product.subCat = subCat
+
 
 
 
@@ -154,49 +156,45 @@ exports.addProduct =  (req,res,next)=>{
     // }
     var name = req.body.name,
         description  = req.body.description,
-        price  = req.body.price,
-        image = req.files.img;
+        price  = req.body.price;
     // req.body.category = category._id+'.'+subCat
     var cat = req.body.category.split('.',2),
         category = cat[0],
         subCat = cat[1];
-
+    var tags = req.body.tags.split(',')
+    //------------------------ UNCOMMENT ME AFTER TESTING ------------------
+    // var image = req.files.img
     // ------------- Image uploading to s3 -----------------------
     // Setting up S3 upload parameters
-    const params = {
-        Bucket: 'glovo241images',
-        Key: image.name, // File name you want to save as in S3
-        Body: image.data
-    };
+    // const params = {
+    //     Bucket: 'glovo241images',
+    //     Key: image.name, // File name you want to save as in S3
+    //     Body: image.data
+    // };
 
     // Uploading files to the bucket
-    s3.upload(params, function(err, data) {
-        if (err) { next(err);}
-        console.log(`File uploaded successfully. ${data.Location}`);
+    // s3.upload(params, function(err, data) {
+    //     if (err) { next(err);}
+    //    console.log(`File uploaded successfully. ${data.Location}`);
          console.log('bout to save product')
          // image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
          //     if(err) return next(err)
          // })
          var product = new ProductModel({
-                                         imgPath:data.Location,
+                                         //imgPath:data.Location,
                                          name:name,
                                          description:description,
                                          price:price,
                                          category:category,
-                                         subCat:subCat
+                                         subCat:subCat,
+                                         tags:tags
                                      });
          product.save((err,data)=>{
              if(err) return next(err);
              // // console.log('data: ',data)
-             CategoryModel.findById(product.category, (err, cat)=>{
-                 cat.addProduct(product)
-                 cat.save(err=>{
-                     if(err) next(err)
-                     return res.redirect(`/admin/product/${data._id}`);
-                 })
-             })
+             return res.redirect(`/admin/product/${data._id}`);
          })
-    });
+    // });
 
 
 

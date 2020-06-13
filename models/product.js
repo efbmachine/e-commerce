@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = mongoose.Types.ObjectId;
+var CategoryModel = require('mongoose').model('Category');
+var TagModel = require('mongoose').model('Tag');
 
 var productSchema = new Schema({
     imgPath:String,
@@ -10,7 +12,7 @@ var productSchema = new Schema({
     promo:Number,
     category:{type:Schema.Types.ObjectId, ref:'Category'},
     subCat:String,
-    tag:[String],
+    tags:[String],
 
 
     // title:  String,
@@ -33,7 +35,28 @@ productSchema.pre('remove', function(next) {
     // Submission.remove({client_id: this._id}).exec();
     next();
 });
-productSchema.pre('save',function(next){
+productSchema.pre('save',async function(next){
+    console.log(this)
+    //Saving the tag if it does't exist
+    await this.tags.forEach(async (item, i) => {
+        if(item!='' && !await TagModel.findOne({name:item})){
+            console.log('item',item);
+            let tag = new TagModel({name:item.trim()})
+            tag.save(err=>{
+                console.log('saved tag');
+                if(err) return next(err)
+            })
+        }
+    });
+    // adding the product to its category
+    await CategoryModel.findById(this.category, (err, cat)=>{
+        if(err) return next(new Error("La categorie n'existe pas"))
+        cat.addProduct(this)
+        cat.save(err=>{
+            console.log('saved product to cat');
+            if(err) next(err)
+        })
+    })
     next()
 })
 

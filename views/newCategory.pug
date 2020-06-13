@@ -1,29 +1,22 @@
 extends layout
 
 block content
-    include partials/nav
+    h5 Creer une nouvelle categorie
     br
-    h3 Admin page
-    hr
-    br
-    include partials/sidenav
-    .main
-        h5 Creer une nouvelle categorie
+    form(action = "/admin/category/create" method = "POST" encType="multipart/form-data")
+        label() Nom de categorie:
+        input(name = "name" type = "text" required placeholder = "Alimentaire")
         br
-        form(action = "/admin/category/create" method = "POST" encType="multipart/form-data")
-            label() Nom de categorie:
-            input(name = "name" type = "text" required placeholder = "Alimentaire")
-            br
-            label() Sous-Categorie 1:
-            input(name = "subCats" type = "text" placeholder = "Boissons")
-            br
-            label() Sous-Categorie 2:
-            input(name = "subCats" type = "text" placeholder = "Entretien")
-            br
-            label() Sous-Categorie 3:
-            input(name = "subCats" type = "text" placeholder = "Fruits, legumes")
-            br
-            label() Sous-Categorie 4:
-            input(name = "subCats" type = "text" placeholder = "Surgeles")
-            br
-            button(type = "Submit") Creer une nouvelle categorie!
+        label() Sous-Categorie 1:
+        input(name = "subCats" type = "text" placeholder = "Boissons")
+        br
+        label() Sous-Categorie 2:
+        input(name = "subCats" type = "text" placeholder = "Entretien")
+        br
+        label() Sous-Categorie 3:
+        input(name = "subCats" type = "text" placeholder = "Fruits, legumes")
+        br
+        label() Sous-Categorie 4:
+        input(name = "subCats" type = "text" placeholder = "Surgeles")
+        br
+        button(type = "Submit") Creer une nouvelle categorie!
