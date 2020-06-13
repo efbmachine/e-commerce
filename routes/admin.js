@@ -35,6 +35,12 @@ router.post('/order/:orderId/edit',order_controller.editOne)
 router.get('/categories/deleteAll', category_controller.deleteAll)
 router.get('/products/deleteAll', product_controller.deleteAll)
 
+router.get('/getTags',(req,res,next)=>{
+    console.log('getting tags')
+    let array = ['caffe','produit laitier','alcool']
+    res.send(array)
+})
+
 // router.get('/',product_controller.getCategories)
 // router.get('/subCat/:subCat', product_controller.getBySubCategory)
 // router.get('/:category',product_controller.getByCategory)
