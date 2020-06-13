@@ -13,7 +13,8 @@ block content
         br
         label() Descrition:
         br
-        textarea(name = "description"   value = product.description)
+        textarea(name = "description" rows="5" cols="50")
+            |!{product.description}
         br
         label() Prix:
         input(name = "price" type = "number" required value = product.price)
@@ -43,6 +44,8 @@ block content
         console.log(tagsValue)
         let tagsField = document.getElementById("tags")
         tagsField.value = tagsValue
+
+
         $( function() {
 
             function split( val ) {

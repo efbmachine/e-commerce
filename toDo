@@ -18,14 +18,15 @@ Not started:
     -fix bug at order when it creates 2 instead of 1
 ____________________________________________________________________________________________________________________
 In process:
+    -check if edit images work
     -tags(left to do:
 
         -implement search by tags
-        -put autocomplete on editProduct
+
         -put tags on client index
         -manage tags
         )
-    -
+
 
 
 
@@ -35,3 +36,4 @@ Completed:
     -Description on top of box instead of side
     -create tags on Submit
     -get tags from tags table
+    -put autocomplete on editProduct

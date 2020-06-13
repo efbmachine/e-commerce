@@ -25,16 +25,18 @@ var productSchema = new Schema({
     // }]
 });
 
-productSchema.pre('remove', function(next) {
-
-    // 'this' is the client being removed. Provide callbacks here if you want
-    // to be notified of the calls' result.
-    // CategoryModel.exists({name:})
-    // Cart.remove({})
-    // Sweepstakes.remove({client_id: this._id}).exec();
-    // Submission.remove({client_id: this._id}).exec();
+productSchema.pre('remove', async function(next) {
+    // removing the product to its category
+    await CategoryModel.findById(this.category, (err, cat)=>{
+        if(err) return next(new Error("La categorie n'existe pas"))
+        cat.removeProduct(this)
+        cat.save(err=>{
+            console.log('removed product from cat');
+            if(err) next(err)
+        })
+    })
     next();
-});
+})
 productSchema.pre('save',async function(next){
     console.log(this)
     //Saving the tag if it does't exist
@@ -51,11 +53,13 @@ productSchema.pre('save',async function(next){
     // adding the product to its category
     await CategoryModel.findById(this.category, (err, cat)=>{
         if(err) return next(new Error("La categorie n'existe pas"))
-        cat.addProduct(this)
-        cat.save(err=>{
-            console.log('saved product to cat');
-            if(err) next(err)
-        })
+        if(cat.containsProduct(this)==false){
+            cat.addProduct(this)
+            cat.save(err=>{
+                if(err) next(err)
+                console.log('saved product to cat');
+            })
+        }
     })
     next()
 })

@@ -49,93 +49,53 @@ exports.renderEdit = (req,res,next)=>{
     })
 }
 
-exports.edit =   (req,res,next)=>{
-     ProductModel.findById(req.params.productId, (err,product)=>{
-        if(err) return next(err)
-        product.name = req.body.name
-        product.description = req.body.description
-        product.price = req.body.price
-        product.tags = req.body.tags
+exports.edit =  async (req,res,next)=>{
+    let product = await  ProductModel.findById(req.params.productId)
+    if(product==null){
+        return next(new Error("This product Id does not exist"))
+    }
 
-        var cat = req.body.category.split('.',2),
-            category = cat[0],
-            subCat = cat[1];
+    //Defining products new values
+    product.name = req.body.name
+    product.description = req.body.description
+    product.price = req.body.price
+    product.tags = req.body.tags.split(',')
+
+    var cat = req.body.category.split('.',2),
+        category = cat[0],
+        subCat = cat[1];
+
+    // If the subcategory of the product changed
+    if(!(product.subCat == subCat)){
+        let oldCat = await CategoryModel.findById(product.category)
+        if(oldCat==null){
+            return next(new Error("This category Id does not exist"))
+        }
+        oldCat.removeProduct(product)
+        oldCat.save()
         product.category = category
-        var oldSubcat = product.subCat
         product.subCat = subCat
+    }
+    var image = req.files? req.files.img : null
+    if(image != null){
+        const params = {
+            Bucket: 'glovo241images',
+            Key: image.name, // File name you want to save as in S3
+            Body: image.data
+        };
+        // Uploading files to the bucket
+        s3.upload(params, function(err, data) {
+            if (err) { return next(err);}
+            console.log(`File uploaded successfully. ${data.Location}`);
+            product.imgPath = data.Location
+        })
+    }
 
+    product.save(err=>{
+        if(err) return next(err)
+        console.log('product saved');
+        return res.redirect(`/admin/product/${product._id}`)
 
-
-
-        var image = req.files? req.files.img : null
-        if(image != null){
-            const params = {
-                Bucket: 'glovo241images',
-                Key: image.name, // File name you want to save as in S3
-                Body: image.data
-            };
-
-            // Uploading files to the bucket
-                s3.upload(params, function(err, data) {
-                if (err) { next(err);}
-                console.log(`File uploaded successfully. ${data.Location}`);
-                product.imgPath = data.Location
-                product.save(err=>{
-                    if(err) next(err)
-                    // console.log('product saved')
-                    if(oldSubcat != product.subCat){
-                        CategoryModel.findById(category,(err,cat)=>{
-                            if(err) next(err)
-                            // console.log('category found')
-                            cat.subCats.forEach((subCat) => {
-                                if(subCat.name==oldSubcat){
-                                    let index = subCat.products.indexOf(product._id)
-                                    // console.log(index)
-                                    subCat.products.splice(index,1)
-                                }
-                            });
-                            cat.addProduct(product)
-                            cat.save(err=>{
-                                if(err) return next(err)
-                                return res.redirect(`/admin/product/${product._id}`)
-                            })
-
-                        })
-                    }
-                    else{
-                        return res.redirect(`/admin/product/${product._id}`)
-                    }
-                })
-            })
-        }
-        else{
-            product.save(err=>{
-                if(err) next(err)
-                // console.log('product saved')
-                if(oldSubcat != product.subCat){
-                    CategoryModel.findById(category,(err,cat)=>{
-                        if(err) next(err)
-                        // console.log('category found')
-                        cat.subCats.forEach((subCat) => {
-                            if(subCat.name==oldSubcat){
-                                let index = subCat.products.indexOf(product._id)
-                                // console.log(index)
-                                subCat.products.splice(index,1)
-                            }
-                        });
-                        cat.addProduct(product)
-                        cat.save(err=>{
-                            if(err) return next(err)
-                            return res.redirect(`/admin/product/${product._id}`)
-                        })
-
-                    })
-                }
-                else{
-                    return res.redirect(`/admin/product/${product._id}`)
-                }
-            })
-        }
     })
 }
 
@@ -163,19 +123,19 @@ exports.addProduct =  (req,res,next)=>{
         subCat = cat[1];
     var tags = req.body.tags.split(',')
     //------------------------ UNCOMMENT ME AFTER TESTING ------------------
-    // var image = req.files.img
+    var image = req.files.img
     // ------------- Image uploading to s3 -----------------------
     // Setting up S3 upload parameters
-    // const params = {
-    //     Bucket: 'glovo241images',
-    //     Key: image.name, // File name you want to save as in S3
-    //     Body: image.data
-    // };
+    const params = {
+        Bucket: 'glovo241images',
+        Key: image.name, // File name you want to save as in S3
+        Body: image.data
+    };
 
     // Uploading files to the bucket
-    // s3.upload(params, function(err, data) {
-    //     if (err) { next(err);}
-    //    console.log(`File uploaded successfully. ${data.Location}`);
+    s3.upload(params, function(err, data) {
+        if (err) { next(err);}
+       console.log(`File uploaded successfully. ${data.Location}`);
          console.log('bout to save product')
          // image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
          //     if(err) return next(err)
@@ -194,7 +154,7 @@ exports.addProduct =  (req,res,next)=>{
              // // console.log('data: ',data)
              return res.redirect(`/admin/product/${data._id}`);
          })
-    // });
+     });
 
 
 

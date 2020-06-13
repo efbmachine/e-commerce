@@ -32,8 +32,13 @@ categorySchema.methods.addSubCategory=function(subcat) {
 categorySchema.methods.addProduct=function(product) {
     this.subCats.forEach((subcat, i) => {
         if(subcat.name == product.subCat){
-            console.log(subcat)
-            return subcat.products.push(product._id)
+            if(subcat.products.indexOf(product._id) == -1){
+                return subcat.products.push(product._id)
+            }
+            else{
+                return "Subcat already contains this product"
+            }
+
         }
     });
 
@@ -49,10 +54,29 @@ categorySchema.methods.getSubCategory= async function(id){
     }
 
 }
-categorySchema.methods.hasProduct= async function(product){
-    // TO COMPLETE
+categorySchema.methods.removeProduct= async function(product){
+    this.subCats.forEach((subcat, i) => {
+        if(subcat.name == product.subCat){
+            let index = subcat.products.indexOf(product._id)
+            if(index != -1){
+                return subCat.products.splice(index,1)
+            }
+        }
+    });
 }
+categorySchema.methods.containsProduct = async function(product){
+    this.subCats.forEach((subcat, i) => {
+        if(subcat.name == product.subCat){
+            if(subcat.products.indexOf(product._id) != -1){
+                return [true,subcat.name]
+            }
+            else{
+                return false
+            }
 
+        }
+    });
+}
 var Category = mongoose.model('Category',categorySchema)
 
 module.exports = Category

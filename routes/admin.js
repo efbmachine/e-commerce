@@ -45,6 +45,7 @@ router.get('/deleteTags',async (req,res,next)=>{
     console.log('deleting tags')
     let result = await TagModel.remove({})
     console.log(result);
+    res.redirect('/admin')
 })
 
 // router.get('/',product_controller.getCategories)
