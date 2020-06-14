@@ -3,7 +3,12 @@ var Schema = mongoose.Schema;
 
 
 var tagSchema = new Schema({
-    name: String,
+    name: {
+            type:String,
+            unique:true,
+            lowercase:true,
+            trim:true,
+        }
     // products:[{type:Schema.Types.ObjectId, ref:'Product'}]
 })
 

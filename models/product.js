@@ -12,7 +12,11 @@ var productSchema = new Schema({
     promo:Number,
     category:{type:Schema.Types.ObjectId, ref:'Category'},
     subCat:String,
-    tags:[String],
+    tags:[{
+        type:String,
+        trim:true,
+        lowercase:true
+    }],
 
 
     // title:  String,
@@ -38,28 +42,54 @@ productSchema.pre('remove', async function(next) {
     next();
 })
 productSchema.pre('save',async function(next){
-    console.log(this);
+
+    let TAGS = await TagModel.getAll()
     //Saving the tag if it does't exist
-    // await this.tags.forEach( (item, i) => {
-    //     let tag = await TagModel.findOne({name:item})
-    //     console.log('tag:'+tag);
-    //     if(item!='' && tag == null){
-    //         let tag = new TagModel({name:item.trim()})
-    //         tag.save(err=>{
-    //             if(err){
-    //                 console.log(err);
-    //                 return next(err)
-    //              }
-    //             console.log('saved tag');
-    //         })
-    //     }
-    // });
+    console.log(TAGS);
+    this.tags.forEach((item, i) => {
+
+
+        let index = TAGS.indexOf(item)
+        console.log('index:'+index);
+        if(index == -1 && item.trim()!==''){
+            let tag = new TagModel({name:item.trim()})
+            tag.save(err=>{
+                if(err) return next(err)
+                console.log(`tag ${item} saved`);
+            })
+        }
+    });
+
+
+
+
+        // console.log('------------------------------------------');
+        // let tagOg = await TagModel.findOne({name:item})
+        // console.log('item:'+item);
+        // console.log('tag:'+tagOg);
+        // if(item.trim() !='' && tagOg == null){
+        //     console.log('creating tag');
+        //     let tag =  new TagModel({name:item.trim()})
+        //     console.log('tag:'+tag);
+        //     tag.save(err=>{
+        //         if(err){
+        //             console.log(err);
+        //             return next(err)
+        //          }
+        //          console.log('tag created');
+        //     })
+        // }
+        // console.log('------------------------------------------');
+        // await waitFor(500)
+        //
+        //
+
+
     // adding the product to its category
     let cat = await CategoryModel.findById(this.category)
     if(cat==null) return next(new Error("La categorie n'existe pas"))
-    let go = await cat.containsProduct(this)
-    console.log(go);
-    if(go==false){
+    let inside = await cat.containsProduct(this)
+    if(inside==false){
         cat.addProduct(this)
         cat.save(err=>{
             if(err) next(err)
@@ -69,7 +99,15 @@ productSchema.pre('save',async function(next){
     next()
 })
 
+const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 
+
+let  asyncForEach = async(arr, cb)=> {
+    for (var i = 0; i < arr.length; i++) {
+        await cb(arr[i],i,arr)
+    }
+
+}
 
 
 // var toDMY = (date)=>{

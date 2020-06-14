@@ -59,7 +59,12 @@ exports.edit =  async (req,res,next)=>{
     product.name = req.body.name
     product.description = req.body.description
     product.price = req.body.price
-    product.tags = req.body.tags.split(',')
+    let tags = req.body.tags.split(',')
+    tags = tags.filter(tag=>{
+        return(tag !== (' '||null||''))
+    })
+    product.tags = tags
+
 
     var cat = req.body.category.split('.',2),
         category = cat[0],
@@ -69,11 +74,10 @@ exports.edit =  async (req,res,next)=>{
     if((product.subCat != subCat)){
         console.log('changing subcategory');
         let oldCat = await CategoryModel.findById(product.category)
-        if(oldCat==null){
-            return next(new Error("This category Id does not exist"))
+        if(oldCat!=null){
+            oldCat.removeProduct(product)
+            oldCat.save()
         }
-        oldCat.removeProduct(product)
-        oldCat.save()
         product.category = category
         product.subCat = subCat
     }
@@ -127,6 +131,10 @@ exports.addProduct =  (req,res,next)=>{
         category = cat[0],
         subCat = cat[1];
     var tags = req.body.tags.split(',')
+    tags = tags.filter(tag=>{
+        return(tag !== (' '||null||''))
+    })
+
     //------------------------ UNCOMMENT ME AFTER TESTING ------------------
     var image = req.files.img
     // ------------- Image uploading to s3 -----------------------
