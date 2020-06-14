@@ -59,7 +59,7 @@ categorySchema.methods.removeProduct= async function(product){
         if(subcat.name == product.subCat){
             let index = subcat.products.indexOf(product._id)
             if(index != -1){
-                return subCat.products.splice(index,1)
+                return subcat.products.splice(index,1)
             }
         }
     });
