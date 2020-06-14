@@ -155,12 +155,7 @@ router.post('/emptyCart',async (req,res,next)=>{
             return res.redirect('/cart')
         })
 })
-router.get('/api/getCat/:catName',async(req,res,next)=>{
-    let category = await CategoryModel.findOne({name:'Alimentaire'},{'subCats.name':1, 'subCats._id':1})
-    console.log(category)
-    res.status(200)
-    return res.json({subcats:category.subCats})
-})
+
 router.get('/getCart/:cartId',async(req,res,next)=>{
     let cart
     try {

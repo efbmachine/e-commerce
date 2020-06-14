@@ -19,7 +19,7 @@ orderSchema.pre('save',async function(req,res,next){
         console.log(this.date);
     }if(this.state==null){
         console.log('setting up state');
-        this.state = "En Traitement"
+        this.state = "traitement"
     }
 })
 var Order = mongoose.model('Order',orderSchema)

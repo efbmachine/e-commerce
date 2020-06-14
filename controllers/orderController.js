@@ -8,9 +8,11 @@ exports.getAll = async (req,res,next) => {
 exports.getOne = async (req,res,next)=>{
     let order = await OrderModel.findById(req.params.orderId)
     await order.populate({path:'list.product',model:'Product'}).execPopulate()
+    await order.populate('owner','name phoneNumber address').execPopulate()
     if(order==null){
         return next(new Error('This order doen\'t exists'))
     }
+    console.log(order);
     res.render('admin_order',{message:req.flash(), order:order})
 }
 

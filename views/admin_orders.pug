@@ -2,7 +2,16 @@ extends layout
 
 block content
     h1 Commandes
-    .container-fluid
+    hr
+    p
+        |Trie par status:
+        select#status(style='margin-left:55px').form-control1
+            option(value='all' id='all' selected) Toutes
+            option(value='traitement' id='processing') En Traitement
+            option(value='preparation' id='preparing') En Preparation
+            option(value='livraison' id='delivering') En cour de livraison
+            option(value='livree' id='delivered') Livree
+    .container-fluid#commandes
         each order in orders
             .row
                 .flex-container.border
@@ -13,3 +22,51 @@ block content
                             p= 'Date:' + order.date
                     .info2
                         p= 'Status:' + order.state
+
+
+
+
+    script.
+
+        function createOrder(order){
+
+            let row = document.createElement('div')
+            let div = document.createElement('div')
+            let info1 = document.createElement('div')
+            let info2 = document.createElement('div')
+            let a = document.createElement('a')
+            let p1  = document.createElement('p')
+            let p2 = document.createElement('p')
+            let p3 = document.createElement('p')
+            let p4 = document.createElement('p')
+            p1.innerHTML = '#'+order._id
+            p2.innerHTML = 'Prix: ' +order.price + ' Fcfa'
+            p3.innerHTML = 'Date: ' + order.date
+            p4.innerHTML = 'Status: ' + order.state
+            info2.appendChild(p4)
+            info2.className='info2'
+            a.appendChild(p1)
+            a.appendChild(p2)
+            a.appendChild(p3)
+            a.href='/admin/order/'+order._id
+            info1.appendChild(a)
+            div.appendChild(info1)
+            div.appendChild(info2)
+            div.className = 'border'
+            row.appendChild(div)
+            return row
+        }
+
+        let orderCat = $('#status')
+        let orders = $('#commandes')
+
+        orderCat.change(function(){
+            orders.empty()
+            console.log('changed:'+orderCat.val())
+            let url = '/api/getOrders/' + orderCat.val()
+            $.get(url,function(data,status){
+                for(order of data){
+                    orders.append(createOrder(order))
+                }
+            })
+        })
