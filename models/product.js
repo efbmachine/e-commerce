@@ -40,15 +40,15 @@ productSchema.pre('remove', async function(next) {
 productSchema.pre('save',async function(next){
     //Saving the tag if it does't exist
     await this.tags.forEach(async (item, i) => {
-        if(item!='' && !await TagModel.findOne({name:item})){
-            console.log('item',item);
+        let tag = await TagModel.findOne({name:item})
+        if(item!='' && tag == null){
             let tag = new TagModel({name:item.trim()})
             tag.save(err=>{
+                console.log('saved tag');
                 if(err) return next(err)
             })
         }
     });
-    console.log('saved tag');
     // adding the product to its category
     await CategoryModel.findById(this.category, (err, cat)=>{
         if(err) return next(new Error("La categorie n'existe pas"))

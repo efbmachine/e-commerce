@@ -85,13 +85,18 @@ exports.edit =  async (req,res,next)=>{
         };
         // Uploading files to the bucket
         s3.upload(params, function(err, data) {
-            if (err) { return next(err);}
-            console.log(`File uploaded successfully. ${data.Location}`);
+            if (err) {
+
+                return next(err);
+            }
+            console.log(`File uploaded successfully. `);
             product.imgPath = data.Location
+            console.log('At location:'+product.imgPath);
         })
     }
 
     product.save(err=>{
+
         if(err) return next(err)
         console.log('product saved');
         return res.redirect(`/admin/product/${product._id}`)
@@ -142,7 +147,7 @@ exports.addProduct =  (req,res,next)=>{
          //     if(err) return next(err)
          // })
          var product = new ProductModel({
-                                         //imgPath:data.Location,
+                                         imgPath:data.Location,
                                          name:name,
                                          description:description,
                                          price:price,
