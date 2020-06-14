@@ -66,7 +66,8 @@ exports.edit =  async (req,res,next)=>{
         subCat = cat[1];
 
     // If the subcategory of the product changed
-    if(!(product.subCat == subCat)){
+    if((product.subCat != subCat)){
+        console.log('changing subcategory');
         let oldCat = await CategoryModel.findById(product.category)
         if(oldCat==null){
             return next(new Error("This category Id does not exist"))
@@ -98,7 +99,6 @@ exports.edit =  async (req,res,next)=>{
     product.save(err=>{
 
         if(err) return next(err)
-        console.log('product saved');
         return res.redirect(`/admin/product/${product._id}`)
 
     })

@@ -33,9 +33,11 @@ categorySchema.methods.addProduct=function(product) {
     this.subCats.forEach((subcat, i) => {
         if(subcat.name == product.subCat){
             if(subcat.products.indexOf(product._id) == -1){
+                console.log(`adding ${product.name} to ${subcat.name}`);
                 return subcat.products.push(product._id)
             }
             else{
+                console.log("Subcat already contains this product");
                 return "Subcat already contains this product"
             }
 
@@ -59,13 +61,14 @@ categorySchema.methods.removeProduct= async function(product){
         if(subcat.name == product.subCat){
             let index = subcat.products.indexOf(product._id)
             if(index != -1){
+                console.log(`removed ${product.name} from ${subcat.name}`);
                 return subcat.products.splice(index,1)
             }
         }
     });
 }
 categorySchema.methods.containsProduct = async function(product){
-    this.subCats.forEach((subcat, i) => {
+    let rtn = this.subCats.some(function(subcat, i){
         if(subcat.name == product.subCat){
             if(subcat.products.indexOf(product._id) != -1){
                 return [true,subcat.name]
@@ -76,6 +79,7 @@ categorySchema.methods.containsProduct = async function(product){
 
         }
     });
+    return rtn
 }
 var Category = mongoose.model('Category',categorySchema)
 

@@ -38,28 +38,34 @@ productSchema.pre('remove', async function(next) {
     next();
 })
 productSchema.pre('save',async function(next){
+    console.log(this);
     //Saving the tag if it does't exist
-    await this.tags.forEach(async (item, i) => {
-        let tag = await TagModel.findOne({name:item})
-        if(item!='' && tag == null){
-            let tag = new TagModel({name:item.trim()})
-            tag.save(err=>{
-                console.log('saved tag');
-                if(err) return next(err)
-            })
-        }
-    });
+    // await this.tags.forEach( (item, i) => {
+    //     let tag = await TagModel.findOne({name:item})
+    //     console.log('tag:'+tag);
+    //     if(item!='' && tag == null){
+    //         let tag = new TagModel({name:item.trim()})
+    //         tag.save(err=>{
+    //             if(err){
+    //                 console.log(err);
+    //                 return next(err)
+    //              }
+    //             console.log('saved tag');
+    //         })
+    //     }
+    // });
     // adding the product to its category
-    await CategoryModel.findById(this.category, (err, cat)=>{
-        if(err) return next(new Error("La categorie n'existe pas"))
-        if(cat.containsProduct(this)==false){
-            cat.addProduct(this)
-            cat.save(err=>{
-                if(err) next(err)
-                console.log('saved product to cat');
-            })
-        }
-    })
+    let cat = await CategoryModel.findById(this.category)
+    if(cat==null) return next(new Error("La categorie n'existe pas"))
+    let go = await cat.containsProduct(this)
+    console.log(go);
+    if(go==false){
+        cat.addProduct(this)
+        cat.save(err=>{
+            if(err) next(err)
+        })
+    }
+
     next()
 })
 
