@@ -12,6 +12,7 @@ var productSchema = new Schema({
     promo:Number,
     category:{type:Schema.Types.ObjectId, ref:'Category'},
     subCat:String,
+    provider:String,
     tags:[{
         type:String,
         trim:true,

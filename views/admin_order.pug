@@ -43,7 +43,7 @@ block content
         .info2.form-group
             label(for='status')
                 b Status de commande:
-            select(style='margin-left:55px' id='status' onChange="updateStatus()").form-control1
+            select(style='margin-left:55px' id='status').form-control1
                 option(value='traitement' id='processing') En Traitement
                 option(value='preparation' id='preparing') En Preparation
                 option(value='livraison' id='delivering') En cour de livraison
@@ -53,33 +53,44 @@ block content
 
             var orderId = '#{order._id}'
             var orderState = '#{order.state}'
-            async function updateStatus() {
-                console.log('updating Status')
-                url = 'https://glovo241.herokuapp.com/admin/order/'+orderId+'/edit'
-                let x = document.getElementById('status')
-                data={
-                    orderId: orderId,
-                    state: x.value}
-                let res = await fetch(url, {
-                    method: 'POST',
-                    mode: 'same-origin',
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json'
 
-                    },
-                    redirect: 'follow',
-                    referrerPolicy: 'no-referrer',
-                    body: JSON.stringify(data)});
-                console.log(res.status)
-                let response = await res.json()
+            $(function(){
+                $('#status').change(function(){
+                    $.post(`/admin/order/${orderId}/edit`,
+                        {
+                            orderId: orderId,
+                            state: this.value
+
+                        },function(data,status){
+                            let msg = 'Une erreur est survenue '
+                            let infoClass = 'msg-error'
+                            if(status=='success'){
+                                msg='Commande modifiee avec success'
+                                infoClass='msg-success'
+                                }
+
+                            $('#informative').addClass(infoClass)
+                            $('#informative').html(`<h5>${msg}</h5>`)
+                            $('#informmative').fadeOut(5000,'swing')
+                            alert(msg)
+                        }
+
+                    )
+
+                })
+
+
+
+            })
+
+            /*
                 let msg = document.getElementById('informative')
                 msg.className = 'msg-success'
-                msg.innerHTML = '<h5>Commande modifiee avec success</h5>'
+                msg.innerHTML =
                 console.log(msg)
 
                 console.log(response.name)}
+                */
 
             function commafy (numb) {
                 var str = numb.toString().split('.');

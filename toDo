@@ -4,7 +4,7 @@ Not started:
     e-categorisation or order(chronolical, address:quartier, bigOrder(>amount || >articleNumber), )
     -main admin:
         CRUD other admin
-    e-add provider on product
+
     -multiple delete on category
     -admin side:
         section utilisateur
@@ -12,6 +12,7 @@ Not started:
     ?-automate (email sent after 5 days if they didn't order yet)
     -rayon nav ba at the bottom of main nav mar (in black)
     -fix bug at order when it creates 2 instead of 1
+    -put gabonese time instead of current
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
@@ -19,6 +20,8 @@ In process:
         -put tags on client index
         -manage tags
         )
+
+    -add provider on product
 
 
 

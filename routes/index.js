@@ -162,6 +162,7 @@ router.get('/getCart/:cartId',async(req,res,next)=>{
         if(req.session.passport.user!=null){
             console.log('got user cart')
             cart = await CartModel.findByUser(req.session.passport.user.id)
+            res.status(200)
             return res.json({number:cart.numOfProducts})
         }
 
