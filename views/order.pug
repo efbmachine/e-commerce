@@ -6,15 +6,29 @@ block content
     .container-fluid
         h3 Produits
         .container
-            each item,index in order.list
-                .row
-                    .flex-container
-                        a(href='/product/'+item.product._id)
-                            p= item.product.name
-                        .blah
-                            p= '('+item.product.price +'Fcfa  X  '+  item.quantity +')'
-        .info1
-            p= 'Prix Total:' + order.price + 'Fcfa'
+        #facture
+            table.table(style='border:solid 1px')
+                thead
+                    tr
+                         th(scope='col') #
+                         th(scope='col') Nom
+                         th(scope='col') Quantite
+                         th(scope='col') Prix
+                tbody
+
+                    each item,index in order.list
+                        tr
+                            th(scope='row')= index
+                            td
+                                a(href='/product/'+item.product._id)=item.product.name
+                            td= item.quantity
+                            td.prix= item.product.price
+                    tr
+                        th(scope='row') Total
+                        td
+                        td
+                        td.prix= order.price
+
         hr
         .info2
             p= 'Status:' + order.state
