@@ -5,6 +5,8 @@ var category_controller = require('../controllers/categoryController')
 var product_controller = require('../controllers/productController')
 var order_controller = require('../controllers/orderController')
 var TagModel = require('mongoose').model('Tag')
+var ProductModel = require('mongoose').model('Product');
+
 /* GET home page. */
 router.get('/',(req,res,next)=>{
     res.render('admin')
@@ -17,6 +19,7 @@ router.get('/product/:productId',product_controller.renderOne)
 router.get('/product/:productId/delete',product_controller.deleteOne)
 router.get('/product/:productId/edit',product_controller.renderEdit)
 router.post('/product/:productId/edit',product_controller.edit)
+router.post('/products/delete',product_controller.delete)
 // CATEGORY
 router.get('/categories', category_controller.getAll)
 router.get('/category/create',category_controller.renderCreate)
@@ -47,7 +50,23 @@ router.get('/deleteTags',async (req,res,next)=>{
     console.log(result);
     res.redirect('/admin')
 })
+router.post('/search',async (req,res,next)=>{
+    try {
+        let results = await ProductModel.find({name:{$regex:`${req.body.search}`, $options:"i"}})
+        console.log(results.length)
+        if(results.length<5){
+            let more = await ProductModel.find({tags:{$regex:`${req.body.search}`,$options:'i'}})
+            results = results.concat(more)
+        }
+        return res.render('admin_products',{message:req.flash(),
+                                            products:results,
+                                            title:`Resultat de la recherche(${req.body.search}):`
+                                            })
 
+    } catch (e) {
+        return next(e)
+    }
+})
 // router.get('/',product_controller.getCategories)
 // router.get('/subCat/:subCat', product_controller.getBySubCategory)
 // router.get('/:category',product_controller.getByCategory)

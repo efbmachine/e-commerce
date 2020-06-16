@@ -1,26 +1,70 @@
 extends layout
 
 block content
-        if(title)
-            h3= (title)
-        else
-            h3 Produits
-        .titleButton
-            a(href='/admin/product/create')
-                button.btn.btn-success(type='button') Creer un Produit
+    if(title)
+        h3= (title)
+    else
+        h3 Produits
 
-        hr
-        .search-container
-            form(action='/action_page.php')
-                input(type='text', placeholder='Search..', name='search')
-                button(type='submit')
-                    i.fa.fa-search
+    .titleButton
+        .dropdown.dropleft
+            button.btn.btn-primary.dropdown-toggle(type='button' data-toggle='dropdown')
+                |Action
+            .dropdown-menu
+                a(href='/admin/product/create')
+                    button.dropdown-item.btn.btn-success(type='button') Creer un Produit
+                button.btn.btn-danger.dropdown-item(type='button' id='delete')
+                    | Supprimer
 
-        hr
-        .flex-container
-            each product in products
-                a(href='/admin/product/'+product._id)
-                    .product
-                        p= product.name
-                        img(src=product.imgPath)
-                        p= product.price + "Fcfa"
+
+
+
+
+    hr
+    .search-container
+        form(action='/admin/search' method='post')
+            input(type='text', placeholder='Search..', name='search')
+            button(type='submit')
+                i.fa.fa-search
+
+    #products
+
+        table.table.table-hover
+            thead
+                tr
+                    th(scope='col') #
+                    th(scope='col') Name
+                    th(scope='col') Price
+            tbody
+                each product in products
+                    tr
+                        th(scope='row')
+                            .form-check
+                                input.form-check-input(type='checkbox' value=product._id name='products')
+
+                        td
+                            a(href='/admin/product/'+product._id)=product.name
+                        td= product.price + ' Fcfa'
+
+
+    script.
+        $(function(){
+            $('#delete').click(async function(){
+                var products = []
+                await $.each($("input[name='products']:checked"),function(){
+                    products.push(this.value);
+                })
+                $.post('/admin/products/delete',
+                    {
+                        'products':products
+                    }
+                    ,function(data,status){
+                    if(status == 'success'){
+                        console.log('deleted successfully')
+                        alert(data)
+                        location.reload()
+
+                    }
+                })
+            })
+        })

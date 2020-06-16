@@ -32,7 +32,7 @@ script.
 
     let cartId = `#{cart}`
 
-    $(function() {
+    $(async function() {
         $.get('/getCart/'+cartId,function(data,status){
             console.log('getting')
             if(status=='success'){
@@ -42,32 +42,39 @@ script.
             }else{
                 console.log('could not get number')
             }})
-
+        let cats = await $.get('/api/getCat/Alimentaire',function(data,status){
+            if(status == 'success'){
+                return data
+            }})
+        console.log(cats)
+        for(subcat of cats.subcats){
+            console.log(subcat)
+            let a = $('<a></a>')
+            a.attr('href','/category/Alimentaire/'+subcat._id)
+            a.html(subcat.name)
+            $('#catBar').append(a)
+        }
         $('#rayon').click(function(){
             let div = $('#displayCategories')
             if(div.html()!=''){
                 div.html('')
                 div.removeClass()
-                return 'done'
-            }
-            $.get('/api/getCat/Alimentaire',function(data,status){
-                if(status == 'success'){
-                    console.log(data)
-                    div.addClass('selection')
-                    div.html('<p><b> Rayons </b></p><br>')
-                    let newDiv = document.createElement('div')
-                    newDiv.className = 'flex-container'
-                    data.subcats.forEach((item,i)=>{
-                        newDiv.innerHTML += `<a href='/category/Alimentaire/${item._id}'>
-                                            <div class='box'>
-                                                <p>${item.name}</p>
-                                            </div>
-                                          </a>`
-                    })
-                    div.append(newDiv)
-                }
+                return 'done'}
+
+            div.addClass('selection')
+            div.html('<p><b> Rayons </b></p><br>')
+            let newDiv = document.createElement('div')
+            newDiv.className = 'flex-container'
+            cats.subcats.forEach((item,i)=>{
+                newDiv.innerHTML += `<a href='/category/Alimentaire/${item._id}'>
+                                    <div class='box'>
+                                        <p>${item.name}</p>
+                                    </div>
+                                  </a>`
             })
-        })
+            div.append(newDiv)
+
+            })
 
     });
 

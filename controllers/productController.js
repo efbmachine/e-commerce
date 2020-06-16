@@ -184,11 +184,35 @@ exports.deleteAll = (req,res,next)=>{
 }
 
 exports.deleteOne = (req,res,next)=>{
+
     ProductModel.findByIdAndRemove(req.params.productId,(err,product)=>{
         if(err) return next(err)
         res.redirect(302, '/admin/products')
     })
+
 }
+
+exports.delete = async (req,res,next)=>{
+    let products= [];
+    if(req.body['products[]'].length==1){
+        products.push(req.body['products[]'])
+    }
+    products = products.concat(req.body['products[]'])
+    console.log(products);
+    for await(var item of products) {
+        console.log('started: '+item);
+        await ProductModel.findByIdAndRemove(item,(err,product)=>{
+            if(err) return next(err)
+            console.log('deleted: ');
+
+        })
+
+    }
+    console.log('out of loop');
+    res.status(200)
+    res.send('Effectue avec succes')
+}
+
 
 exports.getByCategory = (req,res,next) =>{
     ProductModel.find({category:req.params.category},(err,products)=>{

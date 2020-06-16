@@ -279,18 +279,17 @@ router.get('/logout',(req,res,next)=>{
 router.post('/search',async (req,res,next)=>{
     try {
         let results = await ProductModel.find({name:{$regex:`${req.body.search}`, $options:"i"}})
-        console.log(results)
-        if(req.user==null){
-            return res.render('products',{message:req.flash(),
-                                        products:results,
-                                        search:req.body.search,
-                                        cart:req.session.cart})
-        }else{
-            return res.render('products',{message:req.flash(),
-                                        products:results,
-                                        search:req.body.search,
-                                        cart:req.session.passport.user.cart})
+        console.log(results.length)
+        if(results.length<5){
+            let more = await ProductModel.find({tags:{$regex:`${req.body.search}`,$options:'i'}})
+            results = results.concat(more)
         }
+        let cart = (req.user==null)? req.session.cart:req.session.passport.user.cart
+        return res.render('products',{message:req.flash(),
+                                    products:results,
+                                    search:req.body.search,
+                                    cart:cart})
+
     } catch (e) {
         return next(e)
     }

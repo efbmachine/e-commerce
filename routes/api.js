@@ -12,7 +12,6 @@ var UserModel = require('mongoose').model('User');
 
 router.get('/getCat/:catName',async(req,res,next)=>{
     let category = await CategoryModel.findOne({name:'Alimentaire'},{'subCats.name':1, 'subCats._id':1})
-    console.log(category)
     res.status(200)
     return res.json({subcats:category.subCats})
 })
@@ -25,7 +24,6 @@ router.get('/getOrders/:orderStatus',async(req,res,next)=>{
     }else{
         orders = await OrderModel.find({state:req.params.orderStatus})
     }
-    console.log(orders);
     res.status(200)
     return res.send(orders)
 })

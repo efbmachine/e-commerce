@@ -16,7 +16,6 @@ Not started:
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
-        -implement search by tags
         -put tags on client index
         -manage tags
         )
@@ -38,3 +37,5 @@ Completed:
         display name
         display address
         can pick traitement, preparation, livraison, livree
+    -tags:
+        -implement search by tags
