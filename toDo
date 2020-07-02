@@ -1,6 +1,6 @@
 Not started:
     -Email on order (and on admin page)
-    e-display of addresses
+
     e-categorisation or order(chronolical, address:quartier, bigOrder(>amount || >articleNumber), )
     -main admin:
         -admin login
@@ -13,7 +13,7 @@ Not started:
     ?-automate (email sent after 5 days if they didn't order yet)
     -fix bug at order when it creates 2 instead of 1
     -put gabonese time instead of current
-    -improve user profile
+
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
@@ -22,6 +22,8 @@ In process:
         )
 
     -add provider on product
+    -improve user profile
+    -display of addresses
 
 
 

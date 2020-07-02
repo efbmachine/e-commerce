@@ -7,7 +7,7 @@ var addressSchema = new Schema({
     user: {type:Schema.Types.ObjectId, ref: 'User'},
     city: String,
     block: String,
-    info: String,
+    active:Boolean
 
 });
 

@@ -26,17 +26,19 @@ var userSchema = new Schema({
     cart: {type:Schema.Types.ObjectId, ref: 'Cart'},
     orders: [{type:Schema.Types.ObjectId, ref: 'Orders'}],
     phoneNumber: String,
-    address: {type:Schema.Types.ObjectId,ref: 'Address'}
+    address: String
 
 
 });
 
 userSchema.pre('save',async function(next){
     console.log('preSave user')
-    if(this.password==null||this.password==''){
+    console.log(this);
+    // if(this.password==null||this.password==''){
         this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
-        console.log('done pre save user')}
+    // }
+    console.log('done pre save user')
     next();
 });
 

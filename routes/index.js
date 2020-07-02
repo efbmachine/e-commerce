@@ -8,6 +8,8 @@ var OrderModel = require('mongoose').model('Order');
 var CartModel = require('mongoose').model('Cart');
 var ProductModel = require('mongoose').model('Product');
 var UserModel = require('mongoose').model('User');
+var AddressModel = require('mongoose').model('Address');
+
 var passport = require('../config/passport')
 
 
@@ -17,7 +19,16 @@ router.get('/',async(req,res,next)=>{
     console.log('req.session',req.session);
     let category = await CategoryModel.findByName('Alimentaire')
     try{
-        if(req.session.passport.user.id){
+
+        if(req.session.returnTo!=null){
+            let route = req.session.returnTo
+            console.log(req.session.returnTo)
+            req.session.returnTo = null
+            console.log(route);
+            res.redirect(route)
+        }
+
+        else if(req.session.passport.user.id){
             return res.render('index',{
                 message:req.flash(),
                 category:category[0],
@@ -114,7 +125,11 @@ router.post('/addToCart',async (req,res,next)=>{
     }
     cart.addProduct(req.body.productId,req.body.quantity)
     cart.save((err)=>{
-            if(err) return next(err)
+            if(err) {
+                console.log('an error has occured while saving cart')
+                console.log(err);
+                return next(err)
+            }
             console.log('save with success')
             req.flash('success','Product ajoute avec succes')
             return res.redirect('/product/'+req.body.productId)
@@ -211,10 +226,25 @@ router.post('/signup',async (req,res,next)=>{
     let user = new UserModel({email:req.body.email,
                                 password:req.body.password,
                                 phoneNumber:req.body.number,
-                                name:req.body.name,
-                                address:req.body.address})
-    await user.save()
-    console.log(user)
+                                name:req.body.name
+                        })
+    let address = new AddressModel({name:req.body.Nomdulieu,
+                                    city:req.body.ville,
+                                    block:req.body.address,
+                                    user:user._id,
+                                    active:true})
+    await user.save((err)=>{
+        if(err) {
+            console.log(err);
+            next(err)
+        }
+    })
+    await address.save((err)=>{
+        if(err) {
+            console.log(err);
+            next(err)
+        }
+    })
     req.login(user,async (err)=>{
         if(err) return next(err)
         if(req.session.cart != null){
@@ -349,12 +379,11 @@ router.post('/order',async(req,res,next)=>{
     }
 })
 
-router.post('/editProfile',connectEnsureLogin.ensureLoggedIn('/signin'),async function(req,res,next){
+router.post('/editInfo',connectEnsureLogin.ensureLoggedIn('/signin'),async function(req,res,next){
     let user = await UserModel.findById(req.session.passport.user.id)
     user.name = req.body.name
     user.email = req.body.email
     user.phoneNumber = req.body.phoneNumber
-    user.address = req.body.addresses
     user.save(err=>{
         if(err) return next(err)
         res.redirect("/profile")
@@ -383,7 +412,8 @@ router.get('/testing', async function(req,res,next) {
 
 router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let user = await UserModel.findById(req.session.passport.user.id)
-    return res.render('profile',{user:user,message:req.flash(),cart:req.user.cart})
+    let address = await AddressModel.find({user:user._id})
+    return res.render('profile',{user:user,message:req.flash(),cart:req.user.cart,address:address})
 })
 
 var authorised

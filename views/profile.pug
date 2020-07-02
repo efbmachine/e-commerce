@@ -7,19 +7,59 @@ block content
     a(href='/logout')
         button.btn.btn-warning(type='button' style='padding:10px') Se Deconnecter
     br
-    .container(style='text-align:center')
-        h2 Info
-        .subCat
-            form(action='/editProfile' method='post')
-                p= 'Name: '
-                input(value=user.name name='name')
-                p=  'Email: '
-                input(value=user.email name='email')
-                p=  'Numero whatsApp: '
-                input(value=user.phoneNumber name='phoneNumber')
-                p=  'Adresse:'
-                textarea(name='address')
-                    |!{user.address}
-                br
+    br
+    br
 
-                button.btn.btn-primary(type='submit') Sauvegarder
+    .container
+        ul.nav.nav-tabs.hidden
+          li.nav-item
+            a.nav-link.active(data-toggle='tab', href='#info') Information
+          li.nav-item
+            a.nav-link(data-toggle='tab', href='#addresses') Mes Addresses
+
+
+            .tab-content
+                #info.tab-pane.fade.show.active
+                    .subCat
+                        form(action='/editInfo' method='post')
+                            p= 'Name: '
+                            input(value=user.name name='name')
+                            p=  'Email: '
+                            input(value=user.email name='email')
+                            p=  'Numero whatsApp: '
+                            input(value=user.phoneNumber name='phoneNumber')
+
+                            br
+                            br
+
+                            button.btn.btn-primary(type='submit') Sauvegarder
+
+
+
+                #addresses.tab-pane.fade
+                    br
+                    br
+                    button#addAddress.btn.btn-success(type='button') Ajouter
+                    br
+                    br
+
+                    table.table.table-hover
+                        thead
+                            tr
+                                th(scope='col') Addresse
+                                th(scope='col') Ville
+                                th(scope='col') Nom du lieu
+                                th(scope='col') Par defaut
+                            each val, index in address
+                                tbody
+                                    tr
+                                        td.container
+                                            .row
+                                                p= val.block
+                                            .row
+                                                i.fas.fa-edit
+                                                i.fas.fa-trash-alt
+
+                                        td= val.city
+                                        td= val.name
+                                        td= val.active
