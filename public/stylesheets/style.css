@@ -281,6 +281,12 @@ div.scrollmenu a:hover {
 .autocomplete-group { padding: 2px 5px; } */
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+
+@media only screen and (max-width:620px) {
+  /* For mobile phones: */
+  
+}
+
 @media screen and (max-height: 450px) {
  .sidenav {padding-top: 15px;}
  .sidenav a {font-size: 18px;}
