@@ -1,14 +1,25 @@
 extends clientLayout
 
 block content
-    a(href='/orders') Commandes
+    a(href='/orders')
+        button.btn.btn-info(type='button' style='padding:10px') Commandes
+
+    a(href='/logout')
+        button.btn.btn-warning(type='button' style='padding:10px') Se Deconnecter
     br
-    a(href='/logout') se Deconnecter
-    br
-    .container.info
+    .container(style='text-align:center')
         h2 Info
         .subCat
-            p= 'Name: ' + user.name
-            p=  'Email: ' + user.email
-            p=  'Numero whatsApp: ' + user.phoneNumber
-            p=  'Adresse:' + user.address 
+            form(action='/editProfile' method='post')
+                p= 'Name: '
+                input(value=user.name name='name')
+                p=  'Email: '
+                input(value=user.email name='email')
+                p=  'Numero whatsApp: '
+                input(value=user.phoneNumber name='phoneNumber')
+                p=  'Adresse:'
+                textarea(name='address')
+                    |!{user.address}
+                br
+
+                button.btn.btn-primary(type='submit') Sauvegarder

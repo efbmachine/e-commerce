@@ -349,21 +349,31 @@ router.post('/order',async(req,res,next)=>{
     }
 })
 
-
-router.get('/test', function(req,res,next) {
-    console.log(req.body)
-    req.flash('successMessage', 'You are successfully using req-flash');
-    req.flash('errorMessage', 'No errors, you\'re doing fine');
-
-    res.redirect('/testing');
-});
-
-router.post('/test',function(req,res,next){
-    console.log(req.body)
-    req.flash('success','Commande modifiee avec succes')
-    res.status(200)
-    res.json({name:'blah blah'})
+router.post('/editProfile',connectEnsureLogin.ensureLoggedIn('/signin'),async function(req,res,next){
+    let user = await UserModel.findById(req.session.passport.user.id)
+    user.name = req.body.name
+    user.email = req.body.email
+    user.phoneNumber = req.body.phoneNumber
+    user.address = req.body.addresses
+    user.save(err=>{
+        if(err) return next(err)
+        res.redirect("/profile")
+    })
 })
+// router.get('/test', function(req,res,next) {
+//     console.log(req.body)
+//     req.flash('successMessage', 'You are successfully using req-flash');
+//     req.flash('errorMessage', 'No errors, you\'re doing fine');
+//
+//     res.redirect('/testing');
+// });
+//
+// router.post('/test',function(req,res,next){
+//     console.log(req.body)
+//     req.flash('success','Commande modifiee avec succes')
+//     res.status(200)
+//     res.json({name:'blah blah'})
+// })
 
 router.get('/testing', async function(req,res,next) {
     let cart = await CartModel.findByUser(req.session.passport.user.id)
