@@ -10,7 +10,7 @@ block content
     br
     br
 
-    .container
+    .container-fluid
         ul.nav.nav-tabs.hidden
           li.nav-item
             a.nav-link.active(data-toggle='tab', href='#info') Information
@@ -34,15 +34,17 @@ block content
 
                             button.btn.btn-primary(type='submit') Sauvegarder
 
-
-
                 #addresses.tab-pane.fade
                     br
                     br
-                    button#addAddress.btn.btn-success(type='button') Ajouter
-                    br
-                    br
+                    // Button trigger modal
+                    button.btn.btn-success(type='button', data-toggle='modal', data-target='#addAddressModal')
+                        | Ajouter
 
+
+                    br
+                    br
+                    //Table
                     table.table.table-hover
                         thead
                             tr
@@ -55,11 +57,132 @@ block content
                                     tr
                                         td.container
                                             .row
-                                                p= val.block
+                                                p(id='block'+index)= val.block
                                             .row
-                                                i.fas.fa-edit
-                                                i.fas.fa-trash-alt
+                                                button.btn.edit(id=''+index type='button' value=val._id data-toggle='modal' data-target='#editAddressModal')
+                                                    i.fas.fa-edit
+                                                button.btn.delete(id=''+index type='button' value=val._id)
+                                                    i.fas.fa-trash-alt
 
-                                        td= val.city
-                                        td= val.name
-                                        td= val.active
+                                        td(id='city'+index)= val.city
+                                        td(id='name'+index)= val.name
+                                        td(id='val'+index)= val.active
+
+
+            // Modals
+            #addAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addAddressModalTitle', aria-hidden='true')
+                .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                        .modal-header
+                            h5#exampleModalLongTitle.modal-title Ajouter une addresse
+                            button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                span(aria-hidden='true') ×
+                        .modal-body(style='')
+                            form#formAddAddress(method='post' action='/addAddress')
+                                label() Ville
+                                br
+                                input(type='text' name='ville' placeholder='' required)
+                                br
+                                label() Addresse
+                                br
+                                input(type='text' name='address' placeholder='' required)
+                                br
+                                label() Nom du lieu
+                                br
+                                input(type='text' name='Nomdulieu' placeholder='' required)
+                                br
+                                label() Pays
+                                select.custom-select
+                                    option(selected='1') Gabon
+
+                                br
+                                .form-check
+                                    input#parDefaut.form-check-input(type='checkbox' name='default')
+                                    label.form-check-label(for='parDefaut') Par Defaut
+
+                        .modal-footer
+                            button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                            button#saveAddress.btn.btn-primary(type='button') Save changes
+            #editAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editAddressModalTitle', aria-hidden='true')
+                .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                        .modal-header
+                            h5#exampleModalLongTitle.modal-title Modifier une addresse
+                            button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                span(aria-hidden='true') ×
+                        .modal-body(style='')
+                            form#formEditAddress(method='post' action='/editAddress')
+                                input#addID(type='text' name='id' hidden)
+                                label() Ville
+                                br
+                                input#editCity(type='text' name='ville' placeholder='' required)
+                                br
+                                label() Addresse
+                                br
+                                input#editBlock(type='text' name='address' placeholder='' required)
+                                br
+                                label() Nom du lieu
+                                br
+                                input#editNDL(type='text' name='Nomdulieu' placeholder='' required)
+                                br
+                                label() Pays
+                                select.custom-select
+                                    option(selected='1') Gabon
+
+                                br
+                                .form-check
+                                    input#parDefaut.form-check-input(type='checkbox' name='default')
+                                    label.form-check-label(for='parDefaut') Par Defaut
+
+                        .modal-footer
+                            button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                            button#saveChanges.btn.btn-primary(type='button') Save changes
+
+
+
+    script.
+        $(function(){
+            $('#saveAddress').click(function(){
+                $.post('/addAddress',
+                        $('#formAddAddress').serialize(),
+                        function(data,status){
+                            alert(data)
+                            console.log(status)
+                            if(status=='success'){
+                                window.location.reload()
+                            }
+                        }) })
+            $('.delete').click(function(){
+                let temp = confirm('Etes vous sur(e) de vouloir supprimer cette addresse ?')
+                if(temp==true){
+                    $.get('/deleteAddress/'+this.value,
+                            function(data,status){
+                                alert(data)
+                                console.log(status)
+                                if(status=='success'){
+                                    window.location.reload()
+                                }
+                            })
+                }})
+            $('.edit').click(function(){
+                let index = this.id
+                let city = $('#city'+index).text()
+                let block = $('#block'+index).text()
+                let name = $('#name'+index).text()
+                $('#addID').val(this.value)
+                $('#editCity').val(city)
+                $('#editBlock').val(block)
+                $('#editNDL').val(name)})
+            $('#saveChanges').click(function(){
+                $.post('/editAddress',
+                        $('#formEditAddress').serialize(),
+                        function(data,status){
+                            alert(data)
+                            console.log(status)
+                            if(status=='success'){
+                                window.location.reload()
+                            }
+                        }
+                )
+            })
+        })

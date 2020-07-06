@@ -12,7 +12,14 @@ var addressSchema = new Schema({
 });
 
 
+addressSchema.pre('save',function(next){
+
+    next()
+})
+
+
 var Address = mongoose.model('Address', addressSchema);
+
 
 
 

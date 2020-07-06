@@ -415,8 +415,55 @@ router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res
     let address = await AddressModel.find({user:user._id})
     return res.render('profile',{user:user,message:req.flash(),cart:req.user.cart,address:address})
 })
+router.post('/addAddress',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    let defaut = (req.body.default==null)? false:true
+    let address = new AddressModel({
+            name:req.body.Nomdulieu,
+            user:req.session.passport.user.id,
+            city:req.body.ville,
+            block:req.body.address,
+            active:defaut
+        })
+    address.save(err=>{
+        if(err){
+            res.status(400)
+            res.json('An error occured please try again later')
 
-var authorised
-
-
+        }else{
+            res.status(200)
+            res.json('Saved Succesfully')
+        }
+    })
+})
+router.get('/deleteAddress/:addressId',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    AddressModel.deleteOne({_id:req.params.addressId},(err,data)=>{
+        if(err) {
+            res.status(400)
+            res.send('An error occured please try again later')
+        }else{
+            res.status(200)
+            res.json('Deleted Succesfully')
+        }
+    })
+})
+router.post('/editAddress',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    let defaut = (req.body.default==null)? false:true
+    console.log(req.body.id);
+    let address = {
+            name:req.body.Nomdulieu,
+            city:req.body.ville,
+            block:req.body.address,
+            active:defaut
+        }
+    AddressModel.updateOne({_id:req.body.id},address,function(err,data){
+        if(err){
+            res.status(400)
+            res.json('An error occured please try again later')
+        }else{
+            console.log(data);
+            res.status(200)
+            res.json('Modifiee avec succes')
+        }
+    })
+})
 module.exports = router;
