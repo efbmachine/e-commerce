@@ -22,7 +22,7 @@ In process:
         )
 
     -add provider on product
-
+    -improve user profile (edit admin order accordingly)
 
 
 
@@ -44,4 +44,3 @@ Completed:
     -rayon nav bar at the bottom of main nav mar (in black)
     -multiple delete on product
     -display of addresses
-    -improve user profile
