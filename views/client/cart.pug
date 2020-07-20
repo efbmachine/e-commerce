@@ -1,0 +1,138 @@
+extends clientLayout
+
+block content
+    .container-fluid
+        h2 Mon panier
+        if(cart.list.length==0)
+            .flex-container.border
+                p Aucun produit
+                    a(href='/') Clickez ici pour ajouter des produits
+
+        else
+            form(action = "/order" method = "POST" encType="multipart/form-data")
+                each item,index in cart.list
+                    .row
+                        .flex-container.border
+                            .cartProduct
+                                a(href='/product/'+item.product._id)
+                                    img(src=item.product.imgPath)
+                                    p= item.product.name
+                                input(type='hidden', name='item',value=item.product._id)
+                            .flex-container
+                                .price
+                                    p(id=`price${index}`)= item.product.price
+                                .sign
+                                    p X
+                                .quantity
+                                    input(name=`qty`,oninput=`calcTotal()`, id='quantity'+index,type='number',value=item.quantity,min='0',max='20')
+                                .total
+                                    p(id=`total${index}`) 40000 xaf
+                .maxTotal
+                    h3 Total:
+                    h3(id=`maxTotal`) 0 xaf
+                    input(id='submitPrice', name='price',type='hidden',value=0)
+
+
+                .AddressInfo(hidden)
+                    input#addrName(name='addrName')
+                    input#addrCity(name='addrCity')
+                    input#addrBlock(name='addrBlock')
+
+                button.order.btn.btn-success(type='submit',formaction='/saveCart')
+                    |Sauvegarder panier
+
+                // Button trigger modal
+
+                button#order.order.btn.btn-primary(type='button', data-toggle='modal', data-target='#infoModal')
+                    |Passer ma commande
+
+                button.order.btn.btn-danger(type='submit',formaction='/emptyCart')
+                    |Vider le pannier
+
+
+
+                // Modal
+                #infoModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='infoModalLabel', aria-hidden='true' )
+                    .modal-dialog(role='document')
+                        .modal-content
+                            .modal-header
+                                h5#infoModalLabel.modal-title Selection de l'addresse
+                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                span(aria-hidden='true') ×
+                            .modal-body
+                                label() Ou désirez vous etres livré ?
+                                select#selectAddress(name='address')
+                                    option(value='' selected disabled) Selectionner un lieu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Anuler
+                                button.btn.btn-primary(type='submit') Passer la commande
+
+
+
+
+    script.
+        function myFunction(index) {
+            let price = document.getElementById(`price${index}`).innerHTML;
+            let quantity = Number(document.getElementById("quantity"+index).value);
+            document.getElementById("total"+index).innerHTML = price * quantity + ' Fcfa'
+            return(price*quantity)
+        }
+
+        function calcTotal(){
+            let totalElement = document.getElementById('maxTotal')
+            let total = 0
+            for(let i=0;i<length;i++){
+                total += myFunction(i)
+            }
+            totalElement.innerHTML = total + " Fcfa"
+            document.getElementById('submitPrice').value = total
+        }
+
+        $(function(){
+            length=#{cart.list.length}
+
+            calcTotal()
+            //////////////////// Get addresses from api
+            let addresses;
+            $('#order').click(function(){
+                $.get('/getAddresses',function(data){
+                    addresses = data;
+                    console.log(data)
+                    var index =0;
+                    for(address of data){
+                        $(('#selectAddress')).append(`
+                            <option value='${index}'>
+                                ${address.name}
+                            </option>
+                        `)
+                        index++
+                    }
+                })
+            })
+
+            /////////////////// Set up the address data in the form
+
+            $('#selectAddress').change(function(){
+                 let address = addresses[this.value]
+                 $('#addrName').val(address.name)
+                 $('#addrCity').val(address.city)
+                 $('#addrBlock').val(address.block)
+
+            })
+
+
+            //////////////////////////// Align Modals ///////////////////////////////
+            function alignModal(){
+                var modalDialog = $(this).find(".modal-dialog");
+                /* Applying the top margin on modal dialog to align it vertically center */
+                modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+            }
+            // Align modal when it is displayed
+            $(".modal").on("shown.bs.modal", alignModal);
+
+            // Align modal when user resize the window
+            $(window).on("resize", function(){
+                $(".modal:visible").each(alignModal);
+            });
+            /////////////////////////////////////////////////////////////////////////////////////////
+        })

@@ -13,7 +13,7 @@ router.get('/:categoryName/:subcategoryId',async (req,res,next)=>{
         let subcat = await cat[0].getSubCategory(req.params.subcategoryId)
         let cart = (req.user==null)? req.session.cart:req.session.passport.user.cart
         console.log('cart:   ' ,cart);
-        return res.render('subcategory',{message:req.flash(),subCat:subcat,cart:cart})
+        return res.render('client/subcategory',{message:req.flash(),subCat:subcat,cart:cart})
 
     } catch (e) {
         return res.status(404).render('error',{message:"Could not find category or subcategory",error:e})

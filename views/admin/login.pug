@@ -1,0 +1,16 @@
+include partials/headers.pug
+
+if(message)
+    .alert.alert-warning.alert-dismissible
+        a.close(href='#', data-dismiss='alert', aria-label='close') ×
+        p=message
+
+h1(style='text-align:center') Admin Login
+form(method='post' action='/admin/login')
+    .row(style='text-align:center')
+        .col-12
+            input(type='text' name='username' placeholder='username' style='width=50px')
+        .col-12
+            input(type='password' autocomplete name='password' placeholder='Password' style='width=50px')
+        .col-12
+            button.btn.btn-primary() Se Connecter

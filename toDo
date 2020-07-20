@@ -13,12 +13,33 @@ Not started:
     ?-automate (email sent after 5 days if they didn't order yet)
     -fix bug at order when it creates 2 instead of 1
     -put gabonese time instead of current
+    - put categories by alph order
+    - payment method:
+        - airtel money / mobiCash
+        - creditCARD (paypal && regural cc)
+    - put pictures to subCategories and categories
+    - reduce product's square size
+    - add footers:
+        -join us
+            - partner stores
+        -help
+            - faq
+            - contact us
+    - center quantity
+    - make qty input center
+    - put ogooue on one side of logo and delivery on the other (in orange)
+    - automatisasion du choix de fournisseur par region et detention du produit
+    - try to remove product's image background so it is transporant
+    - change from session to cookies
+    -
 
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
         -put tags on client index
         -manage tags
+        -implement search by products . tags only (add product's name to product's tags)
+
         )
 
     -add provider on product
@@ -39,8 +60,6 @@ Completed:
         display name
         display address
         can pick traitement, preparation, livraison, livree
-    -tags:
-        -implement search by tags
     -rayon nav bar at the bottom of main nav mar (in black)
     -multiple delete on product
     -display of addresses

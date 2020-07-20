@@ -4,6 +4,24 @@ block content
     h2= 'Commande #'+order._id
     hr
     .container-fluid
+        .info
+            .row
+                .addresse.col-6(style='text-align:center')
+                    .col-12
+                        label
+                            b Addresse:
+                    .col-12
+                        p= order.address.city
+                        p= order.address.block
+                        p= order.address.name
+
+                .info2.col-6(style='text-align:center')
+                    .col-12
+                        label
+                            b Status:
+                    .col-12
+                        p= order.state
+
         h3 Produits
         .container
         #facture
@@ -30,5 +48,3 @@ block content
                         td.prix= order.price
 
         hr
-        .info2
-            p= 'Status:' + order.state

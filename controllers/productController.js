@@ -20,7 +20,7 @@ exports.getAll  =    (req,res,next)=>{
         // // console.log('-----------------------------------------------');
         // // console.log(products)
         // // console.log('-----------------------------------------------');
-        return res.render('admin_products',{products:products})
+        return res.render('admin/admin_products',{products:products})
     })
 }
 
@@ -30,7 +30,7 @@ exports.renderOne = (req,res,next)=>{
         // console.log('-----------------------------------------------');
         // console.log(product)
         // console.log('-----------------------------------------------');
-        return res.render('admin_product',{product:product})
+        return res.render('admin/admin_product',{product:product})
     })
 }
 
@@ -43,7 +43,7 @@ exports.renderEdit = (req,res,next)=>{
         CategoryModel.find({},{name:1, subCats:1},(err,cats)=>{
             if(err) return next(err)
             // console.log('cats: ', cats)
-            return res.render('editProduct',{product:product, categories:cats})
+            return res.render('admin/editProduct',{product:product, categories:cats})
 
         })
     })
@@ -115,7 +115,7 @@ exports.renderAddProduct = (req,res,next)=>{
         let tags = ['caffe','produit laitier']
         // console.log('tags: ',tags)
         // console.log('cats: ', cats)
-        res.render('newProduct', {categories:cats, tags:JSON.stringify(tags)})
+        res.render('admin/newProduct', {categories:cats, tags:JSON.stringify(tags)})
     })
 }
 
@@ -217,14 +217,14 @@ exports.delete = async (req,res,next)=>{
 exports.getByCategory = (req,res,next) =>{
     ProductModel.find({category:req.params.category},(err,products)=>{
         if (err) return next(err)
-        return res.render('index',{title:req.params.category,products:products})
+        return res.render('client/index',{title:req.params.category,products:products})
     })
 }
 
 exports.getBySubCategory = (req,res,next) =>{
     ProductModel.find({subCat:req.params.subCat},(err,products)=>{
         if (err) return next(err)
-        return res.render('index',{title:req.params.subCat,products:products})
+        return res.render('client/index',{title:req.params.subCat,products:products})
     })
 }
 

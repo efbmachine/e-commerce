@@ -35,15 +35,22 @@ block content
             p
                 b Utilisateur:
             .owner-info(style='margin-left:55px')
-                p= 'Nom: '+ order.owner.name
-                p= 'Addresse: ' +order.owner.address
-                p= 'N* WhatsApp: '+order.owner.phoneNumber
+                p
+                    b Nom:
+                    .a(style='margin-left:5%')= order.owner.name
+                p
+                    b Addresse:
+                    .a(style='margin-left:5%')= order.address.city + '/' + order.address.block + '/' +order.address.name
+                p
+                    b Numero WhatsApp:
+                    .a(style='margin-left:5%')= order.owner.phoneNumber
 
         hr
         .info2.form-group
             label(for='status')
                 b Status de commande:
             select(style='margin-left:55px' id='status').form-control1
+                option(disabled value='paiement') Attente de paiement
                 option(value='traitement' id='processing') En Traitement
                 option(value='preparation' id='preparing') En Preparation
                 option(value='livraison' id='delivering') En cour de livraison

@@ -1,13 +1,13 @@
 var CategoryModel = require('mongoose').model('Category');
 
 exports.getAll = (req,res,next) => {
-    CategoryModel.find({},(err,cats)=>{
+    CategoryModel.find({},{name:-1},(err,cats)=>{
         if(err) next(err)
-        res.render('admin_categories',{cats:cats})
+        res.render('admin/admin_categories',{cats:cats})
     })
 }
 exports.renderCreate = (req,res,next)=>{
-    res.render('newCategory')
+    res.render('admin/newCategory')
 }
 
 exports.create = (req,res,next) => {
@@ -35,14 +35,14 @@ exports.showCategory = (req,res,next)=>{
     CategoryModel.findById(req.params.categoryId, (err, category)=>{
         if(err) next(err)
         category.populate({path: 'subCats.products',model:'Product'},(err,cat)=>{
-                res.render('admin_category',{category:category})
+                res.render('admin/admin_category',{category:category})
         })
     })
 }
 exports.renderEdit = (req,res,next)=>{
     CategoryModel.findById(req.params.categoryId, (err, category)=>{
         if(err) next(err)
-        res.render('editCategory',{category:category})
+        res.render('admin/editCategory',{category:category})
     })
 }
 
@@ -79,7 +79,7 @@ exports.showSubcategory = (req,res,next)=>{
                 let subs = cat.subCats
                 subs.forEach((sub, i) => {
                     if(sub._id == req.params.subcategoryId)
-                        return res.render('admin_products',{title:sub.name,products:sub.products})
+                        return res.render('admin/admin_products',{title:sub.name,products:sub.products})
                 });
 
         })

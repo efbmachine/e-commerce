@@ -1,0 +1,28 @@
+extends layout
+
+block content
+
+    h1(style='text-align:center') Cree un admin
+    form(method='post' action='/admin/createAdmin')
+        .row
+            .col-12
+                input(type='text' name='username' required placeholder='Username')
+            .col-12
+                input(type='email' name='email' placeholder='email')
+            .col-12
+                input#pass(type='text' name='password' required placeholder='Password')
+            .col-12
+                input#confirm(type='text' required placeholder='confirm password')
+            .col-12
+                button#create.btn.btn-primary(disabled) Creer compte
+
+    script.
+        $('#confirm').on('input',function(){
+            console.log(this.value)
+            console.log($(this).val())
+            if($('#pass').val()!=$(this).val()){
+                $('#create').attr('disabled',true)
+            }else{
+                $('#create').attr('disabled',false)
+            }
+        })

@@ -42,24 +42,27 @@ productSchema.pre('remove', async function(next) {
     })
     next();
 })
+
 productSchema.pre('save',async function(next){
 
     let TAGS = await TagModel.getAll()
     //Saving the tag if it does't exist
-    console.log(TAGS);
-    this.tags.forEach((item, i) => {
-
-
+    // console.log(TAGS);
+    for await (var item of this.tags) {
         let index = TAGS.indexOf(item)
-        console.log('index:'+index);
+        // console.log('index:'+index);
         if(index == -1 && item.trim()!==''){
             let tag = new TagModel({name:item.trim()})
-            tag.save(err=>{
+            await tag.save(err=>{
                 if(err) return next(err)
-                console.log(`tag ${item} saved`);
+                // console.log(`tag ${item} saved`);
             })
         }
-    });
+    };
+
+    // Add words in the products's name to the product's tags
+    let wordsInName = this.name.split()
+    this.tags.push()
 
 
 
@@ -100,15 +103,15 @@ productSchema.pre('save',async function(next){
     next()
 })
 
-const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-
-let  asyncForEach = async(arr, cb)=> {
-    for (var i = 0; i < arr.length; i++) {
-        await cb(arr[i],i,arr)
-    }
-
-}
+// const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+//
+//
+// let  asyncForEach = async(arr, cb)=> {
+//     for (var i = 0; i < arr.length; i++) {
+//         await cb(arr[i],i,arr)
+//     }
+//
+// }
 
 
 // var toDMY = (date)=>{

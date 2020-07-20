@@ -8,6 +8,7 @@ var OrderModel = require('mongoose').model('Order');
 var CartModel = require('mongoose').model('Cart');
 var ProductModel = require('mongoose').model('Product');
 var UserModel = require('mongoose').model('User');
+var AddressModel = require('mongoose').model('Address');
 
 
 router.get('/getCat/:catName',async(req,res,next)=>{
@@ -27,6 +28,7 @@ router.get('/getOrders/:orderStatus',async(req,res,next)=>{
     res.status(200)
     return res.send(orders)
 })
+
 
 
 

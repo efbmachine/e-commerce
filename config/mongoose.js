@@ -8,6 +8,7 @@ require('../models/cart');
 require('../models/category');
 require('../models/tag');
 require('../models/product');
+require('../models/admin');
 
 
 
@@ -20,7 +21,6 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.set('useNewUrlParser',true)
 mongoose.connect(realMDB);
-console.log('gucci gang');
 //get the default connection
 var db = mongoose.connection;
 //console.log('###############################################################');

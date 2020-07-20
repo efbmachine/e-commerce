@@ -1,11 +1,14 @@
 .container-fluid.mainNav
     .bar
+
+        .profile
+            a(href='/profile')
+                button.btn(type='button')
+                    i.fa.fa-user.fa-3x
         .title
-            a.navbar-brand(href='/')
-                img.logo(src='/images/kiw.jpeg')
-                |    Ogooue Delivery
-        .rayon
-            button#rayon.btn-primary(type='button') Rayons
+            a#namae.navbar-brand(href='/' style='color:orange')
+                img.logo(src='/images/Logo-1.png' style='width:100%')
+
 
         .shoppingCart
             a(href='/cart')
@@ -14,10 +17,6 @@
                     #shopCartNumber
                         p 0
 
-        .profile
-            a(href='/profile')
-                button.btn(type='button')
-                    i.fa.fa-user.fa-3x
 
 
     .search-container

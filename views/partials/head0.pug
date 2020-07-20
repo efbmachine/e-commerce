@@ -1,0 +1,27 @@
+.container-fluid.mainNav
+    .bar.row
+        .shoppingCart(style='position:relative')
+            a(href='/cart').col-4
+                button.btn
+                    i.fa.fa-shopping-cart.fa-2x
+                    #shopCartNumber
+                        p(style='position:absolute top:0% left:50%') 0
+        .title.col-4(style='text-align:center')
+            a.navbar-brand(href='/')
+                img.logo(src='/images/kiw.jpeg')
+                |
+
+        .profile
+            a(href='/profile').col-4
+                button.btn(type='button')
+                    i.fa.fa-user.fa-2x
+
+
+    .search-container
+        form(action='/search' method='POST')
+            input(type='text', placeholder='Recherche..', name='search').col-10
+            button(type='submit').col-2
+                i.fa.fa-search
+
+
+.scrollmenu#catBar

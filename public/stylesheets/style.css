@@ -158,15 +158,15 @@ img{
     position:sticky;
     top:0;
     align-items: baseline;
-    background-color: orange;
+    background-color: DodgerBlue;
     padding: 10px;
     z-index: 1;
 }
 .logo{
     width: auto;
     height: auto;
-    max-height: 50px;
-    max-width: 100px;
+    max-height: 150px;
+    max-width: 150px;
 }
 .selection{
     padding:20px;
@@ -176,7 +176,7 @@ img{
     font: 40px "Apple Chancery";
     border-radius: 40px;
     font-family: cursive;
-    background-color: white;
+    /* background-color: white; */
     border: solid orange;
     text-align: center;
 }
@@ -282,9 +282,10 @@ div.scrollmenu a:hover {
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 
-@media only screen and (max-width:620px) {
+@media only screen and (max-width:300px) {
   /* For mobile phones: */
-  
+
+#namae {font-size:15px}
 }
 
 @media screen and (max-height: 450px) {

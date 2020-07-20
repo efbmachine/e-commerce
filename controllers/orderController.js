@@ -2,7 +2,7 @@ var OrderModel = require('mongoose').model('Order');
 
 exports.getAll = async (req,res,next) => {
     let orders = await OrderModel.find({}).sort({_id:-1})
-    res.render('admin_orders',{message:req.flash(),orders:orders})
+    res.render('admin/admin_orders',{message:req.flash(),orders:orders})
 
 }
 exports.getOne = async (req,res,next)=>{
@@ -13,7 +13,7 @@ exports.getOne = async (req,res,next)=>{
         return next(new Error('This order doen\'t exists'))
     }
     console.log(order);
-    res.render('admin_order',{message:req.flash(), order:order})
+    res.render('admin/admin_order',{message:req.flash(), order:order})
 }
 
 exports.editOne = async (req,res,next)=>{
@@ -28,7 +28,7 @@ exports.editOne = async (req,res,next)=>{
 
 }
 exports.renderCreate = (req,res,next)=>{
-    res.render('newCategory')
+    res.render('admin/newCategory')
 }
 
 // exports.create = (req,res,next) => {

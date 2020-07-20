@@ -37,11 +37,11 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        httpOnly:false,
+        httpOnly:true,
         secure: 'auto',
         maxAge: 15*60*1000
     }
-    }));
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

@@ -37,10 +37,9 @@ html
 
 script.
 
-    let cartId = `#{cart}`
 
     $(async function() {
-        $.get('/getCart/'+cartId,function(data,status){
+        $.get('/getCart',function(data,status){
             console.log('getting')
             if(status=='success'){
                 console.log('data:')

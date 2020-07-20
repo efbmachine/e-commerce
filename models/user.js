@@ -32,13 +32,13 @@ var userSchema = new Schema({
 });
 
 userSchema.pre('save',async function(next){
-    console.log('preSave user')
-    console.log(this);
+    // console.log('preSave user')
+    // console.log(this);
     // if(this.password==null||this.password==''){
         this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
     // }
-    console.log('done pre save user')
+    // console.log('done pre save user')
     next();
 });
 

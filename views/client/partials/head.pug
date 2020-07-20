@@ -1,0 +1,29 @@
+.container-fluid.mainNav
+    .bar
+
+        .profile
+            a(href='/profile')
+                button.btn(type='button')
+                    i.fa.fa-user.fa-3x
+        .title
+            a#namae.navbar-brand(href='/' style='color:orange')
+                img.logo(src='/images/Logo-1.svg')
+
+
+        .shoppingCart
+            a(href='/cart')
+                button.btn(type='button')
+                    i.fa.fa-shopping-cart.fa-3x
+                    #shopCartNumber
+                        p 0
+
+
+
+    .search-container
+        form(action='/search' method='POST')
+            input(type='text', placeholder='Recherche..', name='search')
+            button(type='submit')
+                i.fa.fa-search
+
+
+.scrollmenu#catBar

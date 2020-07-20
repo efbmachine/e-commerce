@@ -114,6 +114,7 @@ cartSchema.statics.findByUser = async function(userId){
 }
 
 cartSchema.post('save',async function(next){
+    console.log('saved cart');
     let user = await UserModel.findById(this.owner)
     if(user!=null){
         user.cart = this._id

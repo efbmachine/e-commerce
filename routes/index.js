@@ -1,5 +1,6 @@
 var express = require('express');
 var connectEnsureLogin = require('connect-ensure-login');
+var nodemailer = require('nodemailer');
 var router = express.Router();
 var product_controller = require('../controllers/productController')
 var category_controller = require('../controllers/categoryController')
@@ -11,6 +12,15 @@ var UserModel = require('mongoose').model('User');
 var AddressModel = require('mongoose').model('Address');
 
 var passport = require('../config/passport')
+
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'efbmachine06@gmail.com',
+    pass: 'franco britannique'
+  }
+});
 
 
 /* GET home page. */
@@ -29,7 +39,7 @@ router.get('/',async(req,res,next)=>{
         }
 
         else if(req.session.passport.user.id){
-            return res.render('index',{
+            return res.render('client/index',{
                 message:req.flash(),
                 category:category[0],
                 connected:true,
@@ -38,7 +48,7 @@ router.get('/',async(req,res,next)=>{
         }
     }finally{
         if(req.user==null&&req.session!=null)
-            return res.render('index',
+            return res.render('client/index',
                 {message:req.flash(),
                     category:category[0],
                     cart:req.session.cart})
@@ -78,7 +88,7 @@ router.get('/cart',async (req,res,next)=>{
     console.log(cart)
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
     // console.log('----------------------- cart:',cart)
-    return res.render('cart',{message:req.flash(),cart:cart})
+    return res.render('client/cart',{message:req.flash(),cart:cart})
 
 })
 router.post('/saveCart',async(req,res,next)=>{
@@ -171,7 +181,7 @@ router.post('/emptyCart',async (req,res,next)=>{
         })
 })
 
-router.get('/getCart/:cartId',async(req,res,next)=>{
+router.get('/getCart',async(req,res,next)=>{
     let cart
     try {
         if(req.session.passport.user!=null){
@@ -208,11 +218,11 @@ router.get('/signin', (req,res,next)=>{
         }
     }
     console.log('This is req.flash():   ',req.flash())
-    return res.render('signin',{cart:req.session.cart,message:req.flash()})
+    return res.render('client/signin',{cart:req.session.cart,message:req.flash()})
 })
 router.get('/signup', (req,res,next)=>{
     if(req.user==null)
-        res.render('signup',{message:req.flash(),cart:req.session.cart})
+        res.render('client/signup',{message:req.flash(),cart:req.session.cart})
     else {
         req.flash('info','Vous avez deja un compte et etes connecter')
         res.redirect('/')
@@ -315,7 +325,7 @@ router.post('/search',async (req,res,next)=>{
             results = results.concat(more)
         }
         let cart = (req.user==null)? req.session.cart:req.session.passport.user.cart
-        return res.render('products',{message:req.flash(),
+        return res.render('client/products',{message:req.flash(),
                                     products:results,
                                     search:req.body.search,
                                     cart:cart})
@@ -326,12 +336,12 @@ router.post('/search',async (req,res,next)=>{
 })
 router.get('/orders',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let orders = await OrderModel.find({owner:req.session.passport.user.id}).sort({_id:-1})
-    return res.render('orders',{message:req.flash(), orders:orders,cart:req.session.passport.user.cart})
+    return res.render('client/orders',{message:req.flash(), orders:orders,cart:req.session.passport.user.cart})
 })
 router.get('/order/:orderId',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let order = await OrderModel.findById(req.params.orderId)
     await order.populate({path: 'list.product',model:'Product'}).execPopulate()
-    return res.render('order',{cart:req.session.passport.cart,order:order,message:req.flash()})
+    return res.render('client/order',{cart:req.session.passport.cart,order:order,message:req.flash()})
 })
 router.post('/order',async(req,res,next)=>{
     if(req.session.passport!=null){
@@ -351,6 +361,11 @@ router.post('/order',async(req,res,next)=>{
             let order = new OrderModel()
             order.owner= req.session.passport.user.id
             order.price = req.body.price
+            let address = {name:req.body.addrName,
+                            block:req.body.addrBlock,
+                            city:req.body.addrCity
+                        }
+            order.address = address
             let item
             try {
                 req.body.item.forEach((element, i) => {
@@ -367,6 +382,22 @@ router.post('/order',async(req,res,next)=>{
             } finally {
                 order.save(err=>{
                     if(err) return next(err)
+
+                    var mailOptions = {
+                      from: 'livraison.domicile241@gmail.com',
+                      to: 'kmessan4@gmail.com',
+                      subject: 'Une commande viens d\'etre effectue',
+                      text: `${order}`
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log('Email sent: ' + info.response);
+                      }
+                    });
+
                     return res.redirect(`/order/${order._id}`)
                 })
             }
@@ -413,7 +444,7 @@ router.get('/testing', async function(req,res,next) {
 router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let user = await UserModel.findById(req.session.passport.user.id)
     let address = await AddressModel.find({user:user._id})
-    return res.render('profile',{user:user,message:req.flash(),cart:req.user.cart,address:address})
+    return res.render('client/profile',{user:user,message:req.flash(),cart:req.user.cart,address:address})
 })
 router.post('/addAddress',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let defaut = (req.body.default==null)? false:true
@@ -466,4 +497,20 @@ router.post('/editAddress',connectEnsureLogin.ensureLoggedIn('/signin'),async(re
         }
     })
 })
+router.get('/getAddresses',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
+    try {
+        let addresses = await AddressModel.find({user:req.session.passport.user.id});
+        console.log(req.session.passport.user.id);
+        console.log(addresses);
+        if(addresses!=null && addresses.length>0){
+            res.status(200)
+            return res.send(addresses)
+        }
+    } catch (e) {
+        res.status(400)
+        return res.send('An error occured: '+e)
+    }
+
+})
+
 module.exports = router;
