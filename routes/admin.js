@@ -11,9 +11,13 @@ var AdminModel = require('mongoose').model('Admin');
 
 let isLoggedIn = async (req,res,next) => {
     try {
+        console.log('is he logged in');
         if(req.cookies.admin != null && (await AdminModel.findOne({_id:req.cookies.admin}))!=null){
             console.log('dose');
             next()
+        }else{
+            return res.render('admin/login')
+            console.log(e);
         }
     } catch (e) {
         return res.render('admin/login')
