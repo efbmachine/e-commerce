@@ -385,7 +385,7 @@ router.post('/order',async(req,res,next)=>{
 
                     var mailOptions = {
                       from: 'livraison.domicile241@gmail.com',
-                      to: 'kmessan4@gmail.com',
+                      to: 'pmoubel@gmail.com',
                       subject: 'Une commande viens d\'etre effectue',
                       text: `${order}`
                     };
