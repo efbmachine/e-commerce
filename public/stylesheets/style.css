@@ -10,6 +10,7 @@ body {
     z-index: 9999;
 
 }
+
 .search-container{
     display:flex;
     justify-content: center;
@@ -250,7 +251,7 @@ img{
 
 }
 .container-fluid{
-    margin:auto
+    /* margin:auto */
 }
 
 div.scrollmenu {

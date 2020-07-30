@@ -1,8 +1,8 @@
 extends clientLayout
 
 block content
-    .container-fluid
-        h2 Mon panier
+    .container
+        h2(style='text-align:center;') Mon panier
         if(cart.list.length==0)
             .flex-container.border
                 p Aucun produit
@@ -10,27 +10,39 @@ block content
 
         else
             form(action = "/order" method = "POST" encType="multipart/form-data")
-                each item,index in cart.list
-                    .row
-                        .flex-container.border
-                            .cartProduct
-                                a(href='/product/'+item.product._id)
-                                    img(src=item.product.imgPath)
-                                    p= item.product.name
-                                input(type='hidden', name='item',value=item.product._id)
-                            .flex-container
-                                .price
+                table.table.table-striped
+                    thead
+                        tr(style='text-align:center')
+                            th Produit
+                            th Prix Unitaire
+                            th Quantite
+                            th Total
+                    tbody
+                        each item,index in cart.list
+                            tr(style= 'text-align:center;')
+                                td(style=' vertical-align:middle')
+                                    a(href='/product/'+item.product._id)
+                                        img(src=item.product.imgPath style='max-height:100px; max-width:100px')
+                                        p= item.product.name
+                                    input(type='hidden', name='item',value=item.product._id)
+
+                                td(style=' vertical-align:middle')
                                     p(id=`price${index}`)= item.product.price
-                                .sign
-                                    p X
-                                .quantity
+
+                                td(style=' vertical-align:middle')
                                     input(name=`qty`,oninput=`calcTotal()`, id='quantity'+index,type='number',value=item.quantity,min='0',max='20')
-                                .total
+
+                                td(style=' vertical-align:middle')
                                     p(id=`total${index}`) 40000 xaf
+
+
                 .maxTotal
                     h3 Total:
                     h3(id=`maxTotal`) 0 xaf
                     input(id='submitPrice', name='price',type='hidden',value=0)
+                #alertMessage.alert.alert-warning.fade(role='alert')
+                    strong(style='text-align:center; font-size:25px')
+                        | Le montant minimum d'une commande est de 5000 Fcfa
 
 
                 .AddressInfo(hidden)
@@ -38,16 +50,19 @@ block content
                     input#addrCity(name='addrCity')
                     input#addrBlock(name='addrBlock')
 
-                button.order.btn.btn-success(type='submit',formaction='/saveCart')
-                    |Sauvegarder panier
+                .row
+                    .col-4
+                        button.order.btn.btn-success(type='submit',formaction='/saveCart')
+                            |Sauvegarder panier
 
-                // Button trigger modal
 
-                button#order.order.btn.btn-primary(type='button', data-toggle='modal', data-target='#infoModal')
-                    |Passer ma commande
-
-                button.order.btn.btn-danger(type='submit',formaction='/emptyCart')
-                    |Vider le pannier
+                    .col-4
+                        // Button trigger modal
+                        button#order.order.btn.btn-primary(type='button')
+                            |Passer ma commande
+                    .col-4
+                        button.order.btn.btn-danger(type='submit',formaction='/emptyCart')
+                            |Vider le pannier
 
 
 
@@ -86,28 +101,57 @@ block content
             }
             totalElement.innerHTML = total + " Fcfa"
             document.getElementById('submitPrice').value = total
+            let orderButton = document.getElementById('order')
+            let alert = document.getElementById('alertMessage')
+            if(total<5000){
+                alert.classList.add('show')
+                orderButton.disabled=true
+            }else{
+                alert.classList.remove('show')
+                orderButton.disabled=false
+            }
         }
 
         $(function(){
             length=#{cart.list.length}
-
-            calcTotal()
+            let user = `#{user}`
+            let addresses = ''
+            console.log(user=='')
+            if(length>=0){
+                calcTotal()
+            }
             //////////////////// Get addresses from api
-            let addresses;
-            $('#order').click(function(){
-                $.get('/getAddresses',function(data){
-                    addresses = data;
-                    console.log(data)
-                    var index =0;
-                    for(address of data){
-                        $(('#selectAddress')).append(`
-                            <option value='${index}'>
-                                ${address.name}
-                            </option>
-                        `)
-                        index++
+            if(user!=null && user!=''){
+                console.log('userId: ',user)
+                $.get('/getAddresses',function(data,status){
+                    console.log('status: ',status)
+                    if(status=='success'){
+                        addresses = data;
+                        console.log('addresses: ',data)
+                        var index =0;
+                        for(address of data){
+                            $(('#selectAddress')).append(`
+                                <option value='${index}'>
+                                    ${address.name}
+                                </option>
+                            `)
+                            index++
+                        }
                     }
                 })
+            }
+
+            $('#order').click(function(){
+                console.log('addresses')
+                if(user==null || user.trim()==''){
+                    $('#modalLoginForm').modal('toggle')
+                }
+                else if(addresses==''){
+                    $('#addAddressModal').modal('toggle')
+                }
+                else{
+                    $('#infoModal').modal('toggle')
+                }
             })
 
             /////////////////// Set up the address data in the form

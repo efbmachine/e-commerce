@@ -6,7 +6,7 @@ block content
         .row
             each product in products
                 a(href='/product/'+product._id)
-                    .product
+                    .col-sm-2
                         p= product.name
-                        img(src=product.imgPath)
+                        img(src=product.imgPath style='width:100%; height:100%')
                         p= product.price + "Fcfa"

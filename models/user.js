@@ -13,32 +13,53 @@ var userSchema = new Schema({
         index: true
     },
     password: {
-        type:String,
-        validate: [
-            function(password) {
-                return password && password.length > 6;
-            }, 'Password should be longer'
-        ]
+        type:String
+        // validate: [
+        //     function(password) {
+        //         return password && password.length > 6;
+        //     }, 'Password should be longer'
+        // ]
     },
     salt: {
         type: String
     },
     cart: {type:Schema.Types.ObjectId, ref: 'Cart'},
     orders: [{type:Schema.Types.ObjectId, ref: 'Orders'}],
-    phoneNumber: String,
-    address: String
+    phoneNumber:
+        {
+            type:String,
+            default:''
+
+        },//String,
+    address: String,
+    facebookID: {
+        type: Number,
+        default: null
+    },
+    isPasswordHashed:{
+        type:Boolean,
+        default:false
+    },
+    hasPassword:{
+        type:Boolean,
+        default:true
+    }
 
 
 });
 
 userSchema.pre('save',async function(next){
-    // console.log('preSave user')
+    console.log('preSave user')
+    console.log('this is the user before pre: ',this)
     // console.log(this);
-    // if(this.password==null||this.password==''){
+    if(this.hasPassword && this.isPasswordHashed==false){
         this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
-    // }
-    // console.log('done pre save user')
+        this.isPasswordHashed = true;
+    }
+
+    console.log('done pre save user')
+    console.log('this is the user after pre: ',this)
     next();
 });
 
@@ -54,7 +75,9 @@ userSchema.methods.hashPassword = function(password) {
 userSchema.methods.authenticate = async function(password) {
     console.log('authenticating');
     // console.log(this.password)
+    console.log(this.password);
     let temp = await this.hashPassword(password)
+    console.log(temp);
 // hconsole.log(temp)
     return this.password === temp;
 };

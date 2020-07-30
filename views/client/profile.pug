@@ -1,16 +1,17 @@
 extends clientLayout
 
 block content
-    a(href='/orders')
-        button.btn.btn-info(type='button' style='padding:10px') Commandes
 
-    a(href='/logout')
-        button.btn.btn-warning(type='button' style='padding:10px') Se Deconnecter
-    br
-    br
-    br
 
-    .container-fluid
+    .container
+        a(href='/orders')
+            button.btn.btn-info(type='button' style='padding:10px') Commandes
+
+        a(href='/logout')
+            button.btn.btn-warning(type='button' style='padding:10px') Se Deconnecter
+        br
+        br
+        br
         ul.nav.nav-tabs.hidden
           li.nav-item
             a.nav-link.active(data-toggle='tab', href='#info') Information
@@ -23,12 +24,11 @@ block content
                     .subCat
                         form(action='/editInfo' method='post')
                             p= 'Name: '
-                            input(value=user.name name='name')
+                            input(value=user.name name='name' required)
                             p=  'Email: '
-                            input(value=user.email name='email')
+                            input(value=user.email name='email' required)
                             p=  'Numero whatsApp: '
-                            input(value=user.phoneNumber name='phoneNumber')
-
+                            input.toComplete(value=user.phoneNumber name='phoneNumber' required)
                             br
                             br
 
@@ -68,41 +68,6 @@ block content
                                         td(id='name'+index)= val.name
                                         td(id='val'+index)= val.active
 
-
-            // Modals
-            #addAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addAddressModalTitle', aria-hidden='true')
-                .modal-dialog.modal-dialog-centered(role='document')
-                    .modal-content
-                        .modal-header
-                            h5#exampleModalLongTitle.modal-title Ajouter une addresse
-                            button.close(type='button', data-dismiss='modal', aria-label='Close')
-                                span(aria-hidden='true') ×
-                        .modal-body(style='')
-                            form#formAddAddress(method='post' action='/addAddress')
-                                label() Ville
-                                br
-                                input(type='text' name='ville' placeholder='' required)
-                                br
-                                label() Addresse
-                                br
-                                input(type='text' name='address' placeholder='' required)
-                                br
-                                label() Nom du lieu
-                                br
-                                input(type='text' name='Nomdulieu' placeholder='' required)
-                                br
-                                label() Pays
-                                select.custom-select
-                                    option(selected='1') Gabon
-
-                                br
-                                .form-check
-                                    input#parDefaut.form-check-input(type='checkbox' name='default')
-                                    label.form-check-label(for='parDefaut') Par Defaut
-
-                        .modal-footer
-                            button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                            button#saveAddress.btn.btn-primary(type='button') Save changes
             #editAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editAddressModalTitle', aria-hidden='true')
                 .modal-dialog.modal-dialog-centered(role='document')
                     .modal-content
@@ -130,9 +95,7 @@ block content
                                     option(selected='1') Gabon
 
                                 br
-                                .form-check
-                                    input#parDefaut.form-check-input(type='checkbox' name='default')
-                                    label.form-check-label(for='parDefaut') Par Defaut
+
 
                         .modal-footer
                             button.btn.btn-secondary(type='button', data-dismiss='modal') Close
@@ -142,16 +105,6 @@ block content
 
     script.
         $(function(){
-            $('#saveAddress').click(function(){
-                $.post('/addAddress',
-                        $('#formAddAddress').serialize(),
-                        function(data,status){
-                            alert(data)
-                            console.log(status)
-                            if(status=='success'){
-                                window.location.reload()
-                            }
-                        }) })
             $('.delete').click(function(){
                 let temp = confirm('Etes vous sur(e) de vouloir supprimer cette addresse ?')
                 if(temp==true){
@@ -173,16 +126,17 @@ block content
                 $('#editCity').val(city)
                 $('#editBlock').val(block)
                 $('#editNDL').val(name)})
-            $('#saveChanges').click(function(){
-                $.post('/editAddress',
-                        $('#formEditAddress').serialize(),
-                        function(data,status){
-                            alert(data)
-                            console.log(status)
-                            if(status=='success'){
-                                window.location.reload()
-                            }
-                        }
-                )
+            if($('.toComplete').val().trim()==''){
+                $('.toComplete').css('background-color','yellow')
+            }
+            $('.toComplete').on('input',function(){
+                if($('.toComplete').val().trim()==''){
+                    $(this).css('background-color','yellow')
+                }
+                else{
+                    $(this).css('background-color','white')
+                }
             })
+
+
         })

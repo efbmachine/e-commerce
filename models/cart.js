@@ -113,14 +113,18 @@ cartSchema.statics.findByUser = async function(userId){
     return await this.findOne({owner:userId})
 }
 
-cartSchema.post('save',async function(next){
-    console.log('saved cart');
-    let user = await UserModel.findById(this.owner)
-    if(user!=null){
-        user.cart = this._id
-        await user.save()
-    }
-})
+// cartSchema.post('save',async function(next){
+//     console.log('saved cart');
+//     let user = await UserModel.findById(this.owner)
+//     if(user!=null){
+//         user.cart = this._id
+//         console.log('user from cart.js :',user);
+//         await user.save(err=>{
+//             if (err) { console.log(err);}
+//             console.log('saved user after adding a cart to it')
+//         })
+//     }
+// })
 
 
 function isEquivalent(a, b) {

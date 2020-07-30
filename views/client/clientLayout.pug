@@ -33,53 +33,153 @@ html
     #displayCategories
     block content
 
+    //Modals
+    #modalLoginForm.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.text-center
+                    h4.modal-title.w-100.font-weight-bold Sign in
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-body.mx-3
+                    form#loginForm
+                        .md-form.mb-5
+                            i.fas.fa-envelope.prefix.grey-text
+                            input#defaultForm-email.form-control.validate(name='email' type='email' required)
+                            label(data-error='wrong', data-success='right', for='defaultForm-email') Your email
+                        .md-form.mb-4
+                            i.fas.fa-lock.prefix.grey-text
+                            input#defaultForm-pass.form-control.validate(name='password' type='password' required)
+                            label(data-error='wrong', data-success='right', for='defaultForm-pass') Your password
+                .modal-footer.d-flex.justify-content-center
+                    button#loginButton.btn.btn-dark Login
+                .or(style='text-align:center')
+                    p
+                        b Ou
+                    h4.row
+                        a(href='/auth/facebook').col
+                            button.btn.btn-primary
+                                | Se connecter avec Facebook
+                        a(href='/signup').col
+                            button.btn.btn-info
+                                | Creer un Compte
+                        //div(class="fb-login-button" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="")
 
 
-script.
 
 
-    $(async function() {
-        $.get('/getCart',function(data,status){
-            console.log('getting')
-            if(status=='success'){
-                console.log('data:')
-                console.log(data)
-                $('#shopCartNumber').html(data.number)
-            }else{
-                console.log('could not get number')
-            }})
-        let cats = await $.get('/api/getCat/Alimentaire',function(data,status){
-            if(status == 'success'){
-                return data
-            }})
-        console.log(cats)
-        for(subcat of cats.subcats){
-            console.log(subcat)
-            let a = $('<a></a>')
-            a.attr('href','/category/Alimentaire/'+subcat._id)
-            a.html(subcat.name)
-            $('#catBar').append(a)
-        }
-        $('#rayon').click(function(){
-            let div = $('#displayCategories')
-            if(div.html()!=''){
-                div.html('')
-                div.removeClass()
-                return 'done'}
+    #addAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addAddressModalTitle', aria-hidden='true')
+        .modal-dialog.modal-dialog-centered(role='document')
+            .modal-content
+                .modal-header
+                    h5#exampleModalLongTitle.modal-title Ajouter une addresse
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body(style='')
+                    form#formAddAddress(method='post' action='/addAddress')
+                        label() Ville
+                        br
+                        input(type='text' name='ville' placeholder='' required)
+                        br
+                        label() Addresse
+                        br
+                        input(type='text' name='address' placeholder='' required)
+                        br
+                        label() Nom du lieu
+                        br
+                        input(type='text' name='Nomdulieu' placeholder='' required)
+                        br
+                        label() Pays
+                        select.custom-select
+                            option(selected='1') Gabon
 
-            div.addClass('selection')
-            div.html('<p><b> Rayons </b></p><br>')
-            let newDiv = document.createElement('div')
-            newDiv.className = 'flex-container'
-            cats.subcats.forEach((item,i)=>{
-                newDiv.innerHTML += `<a href='/category/Alimentaire/${item._id}'>
-                                    <div class='box'>
-                                        <p>${item.name}</p>
-                                    </div>
-                                  </a>`
+                        
+
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button#saveAddress.btn.btn-primary(type='button') Save changes
+
+    script.
+        $(async function(){
+            $('#saveAddress').click(function(){
+                $.post('/addAddress',
+                        $('#formAddAddress').serialize(),
+                        function(data,status){
+                            alert(data)
+                            console.log(status)
+                            if(status=='success'){
+                                window.location.reload()
+                            }
+                        })
             })
-            div.append(newDiv)
-
+            $('#saveChanges').click(function(){
+                $.post('/editAddress',
+                        $('#formEditAddress').serialize(),
+                        function(data,status){
+                            alert(data)
+                            console.log(status)
+                            if(status=='success'){
+                                window.location.reload()
+                            }
+                        }
+                )
             })
 
-    });
+
+            $.get('/getCart',function(data,status){
+                console.log('getting')
+                if(status=='success'){
+                    console.log('data:')
+                    console.log(data)
+                    $('#shopCartNumber').html(data.number)
+                }else{
+                    console.log('could not get number')
+                }
+            })
+            let cats = await $.get('/api/getCat/Alimentaire',function(data,status){
+                if(status == 'success'){
+                    return data
+                }}
+            )
+            console.log(cats)
+            for(subcat of cats.subcats){
+                console.log(subcat)
+                let a = $('<a></a>')
+                a.attr('href','/category/Alimentaire/'+subcat._id)
+                a.html(subcat.name)
+                $('#catBar').append(a)
+            }
+            $('#rayon').click(function(){
+                let div = $('#displayCategories')
+                if(div.html()!=''){
+                    div.html('')
+                    div.removeClass()
+                    return 'done'}
+
+                div.addClass('selection')
+                div.html('<p><b> Rayons </b></p><br>')
+                let newDiv = document.createElement('div')
+                newDiv.className = 'flex-container'
+                cats.subcats.forEach((item,i)=>{
+                    newDiv.innerHTML += `<a href='/category/Alimentaire/${item._id}'>
+                                        <div class='box'>
+                                            <p>${item.name}</p>
+                                        </div>
+                                      </a>`
+                })
+                div.append(newDiv)
+
+                })
+            $('#loginButton').click(function(e){
+                e.preventDefault()
+                let formData = $('#loginForm').serialize()
+                $.post('/signin?api=true',formData,function(data,status){
+                    if(data=='Success'){
+                        location.reload()
+                    }else{
+                        alert('Please try again')
+                    }
+                })
+            })
+
+        });

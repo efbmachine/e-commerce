@@ -12,10 +12,22 @@ block content
                 br
                 br
                 button(type = "Submit") Sign me in!
+                br
+                br
+
+                h4
+                    p
+                        b Ou
+                    //a.btn.btn-primary(href='/auth/facebook') Se connecter avec Facebook
+                    div(class="fb-login-button" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="")
+
                 hr
-        br
+
+
+                br
 
     h4 Vous n'avez pas encore de compte ?
         a(href='/signup') Creer un compte
 
-    script.
+    #fb-root
+    script(async='', defer='', crossorigin='anonymous', src='https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v7.0&appId=901129653708849&autoLogAppEvents=1', nonce='4NoNSMF9')

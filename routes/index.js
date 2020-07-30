@@ -88,7 +88,8 @@ router.get('/cart',async (req,res,next)=>{
     console.log(cart)
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
     // console.log('----------------------- cart:',cart)
-    return res.render('client/cart',{message:req.flash(),cart:cart})
+    let userId = (req.user!=null)?req.user._id:null
+    return res.render('client/cart',{message:req.flash(),cart:cart,user:userId})
 
 })
 router.post('/saveCart',async(req,res,next)=>{
@@ -267,53 +268,73 @@ router.post('/signup',async (req,res,next)=>{
         return res.redirect('/')
     })
 })
-router.post('/signin', async (req,res,next)=>{
-    return passport.authenticate('local',(err,user,info)=>{
-        if(err) return next(err)
-        if(info!=null)
-            req.flash('info',info.message)
+router.post('/signin',
+    passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true  }),
+    async (req,res,next)=>{
+        console.log('req.query: ',req.query)
+        req.flash('info',`Bonjour, ${req.user.name}`)
+        // if(err) return next(err)
+        // if(info!=null)
+        //     req.flash('info',info.message)
+        //
+        // // if(!user) return res.redirect('/signin')
+        // // else{
+        // // req.login(user,async (err)=>{
 
-        if(!user) return res.redirect('/signin')
-        if(user){
-            req.login(user,async (err)=>{
-                // if no cart yet
-                if(req.session.cart == null){
-                    req.flash('info',`Bonjour, ${user.name}`)
-                    return res.redirect('/')
+
+
+        // if no cart yet
+        //console.log('req.user: ' ,req.user);
+        req.flash('info',`Bonjour, ${req.user.name}`)
+
+        if(req.session.cart == null){
+            if(req.query['api']){
+                res.status(200)
+                return res.json('Success')
+            }
+            return res.redirect('/')
+        }
+        // if had cart before login
+        else{
+            let cart = await CartModel.findOne({owner:req.user._id})
+            //if user has no cart
+            if (cart == null){
+                cart = await CartModel.findById(req.session.cart)
+                cart.owner = req.user._id
+            }
+            else if(cart!=null){
+                let temp = await CartModel.findById(req.session.cart)
+                await cart.fuseWith(temp)
+                temp.remove()
+            }
+
+            cart.save(err=>{
+                if(err) {
+                    return next(err)}
+                if(req.query['api']){
+                    res.status(200)
+                    return res.json('Success')
                 }
-                // if had cart before login
-                else{
-                    let cart = await CartModel.findOne({owner:user._id})
-                    //if user has no cart
-                    if (cart == null){
-                        cart = await CartModel.findById(req.session.cart)
-                        cart.owner = user._id
-                    }
-                    else if(cart!=null){
-                        let temp = await CartModel.findById(req.session.cart)
-                        await cart.fuseWith(temp)
-                        temp.remove()
-                    }
+                return res.redirect('/')
 
-                    cart.save(err=>{
-                        if(err) return next(err)
-                        return res.redirect('/')
-
-                    })
-                }
             })
         }
+        // })
+        // // }
 
-    })(req,res,next)
+    }
+// )(req,res,next)
     // if(err) return next(err)
     // if(user==false){
     //     return res.render('/signin',{message:info.message})
     // }
     // return res.redirect('/')
-})
+// }
+)
 router.get('/logout',(req,res,next)=>{
     req.session.passport = null
     req.session.cart = null
+    req.session.returnTo = null
     res.redirect('/')
 })
 router.post('/search',async (req,res,next)=>{
@@ -444,6 +465,9 @@ router.get('/testing', async function(req,res,next) {
 router.get('/profile',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
     let user = await UserModel.findById(req.session.passport.user.id)
     let address = await AddressModel.find({user:user._id})
+    if(user.phoneNumber==''){
+        req.flash('info','Veuillez rajouter un numéro de telephone')
+    }
     return res.render('client/profile',{user:user,message:req.flash(),cart:req.user.cart,address:address})
 })
 router.post('/addAddress',connectEnsureLogin.ensureLoggedIn('/signin'),async(req,res,next)=>{
@@ -506,11 +530,56 @@ router.get('/getAddresses',connectEnsureLogin.ensureLoggedIn('/signin'),async(re
             res.status(200)
             return res.send(addresses)
         }
+        res.status(204)
+        return res.json('not found')
+
     } catch (e) {
-        res.status(400)
+        res.status(500)
         return res.send('An error occured: '+e)
     }
 
 })
 
+
+// facebook
+router.get('/auth/facebook',
+  passport.authenticate('facebook',{scope:'email'}));
+
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/signin' }),
+    async function(req, res,next) {
+        console.log('shitttttttttttttttttttttttttttttttttttttttt');
+        // Successful authentication, redirect home.
+        console.log(req.session.passport);
+        // if no cart yet
+        if(req.session.cart == null){
+            if(req.user.phoneNumber.trim()==''){
+                return res.redirect('/profile')
+            }
+            return res.redirect('/')
+        }
+        // if had cart before login
+        else{
+            let cart = await CartModel.findOne({owner:req.session.passport.user.id})
+            //if user has no cart
+            if (cart == null){
+                cart = await CartModel.findById(req.session.cart)
+                cart.owner = req.session.passport.user.id
+            }
+            else if(cart!=null){
+                let temp = await CartModel.findById(req.session.cart)
+                await cart.fuseWith(temp)
+                temp.remove()
+            }
+
+            await cart.save(err=>{
+                if(err) return next(err)
+            })
+            if(req.user.phoneNumber.trim()==''){
+                return res.redirect('/profile')
+            }
+            return res.redirect('/')
+
+        }
+    })
 module.exports = router;

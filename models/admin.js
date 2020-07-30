@@ -28,15 +28,23 @@ var adminSchema = new Schema({
     salt: {
         type: String
     },
-    permissions:[String]
+    isPasswordHashed:{
+        type:Boolean,
+        default:false
+    },
+    permissions:[{
+        type:String,
+        // enum:['CRUD all','orders Read','products Read',]
+    }]
 
 });
 
 adminSchema.pre('save',async function(next){
-    // if(this.password==null||this.password==''){
+    if(this.isPasswordHashed==false){
         this.salt = await new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
-    // }
+        this.isPasswordHashed = true;
+    }
     next();
 });
 

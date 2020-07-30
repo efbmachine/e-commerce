@@ -3,8 +3,6 @@ Not started:
 
     e-categorisation or order(chronolical, address:quartier, bigOrder(>amount || >articleNumber), )
     -main admin:
-        -admin login
-        -admin user
         -let main admin CRUD other admin
 
     -admin side:
@@ -17,6 +15,8 @@ Not started:
     - payment method:
         - airtel money / mobiCash
         - creditCARD (paypal && regural cc)
+
+    - quick add to cart
     - put pictures to subCategories and categories
     - reduce product's square size
     - add footers:
@@ -31,8 +31,10 @@ Not started:
     - automatisasion du choix de fournisseur par region et detention du produit
     - try to remove product's image background so it is transporant
     - change from session to cookies
+    - display cart on the side after a product is added
+    - login modal when doing something that requires login
+    - implement promo by price (and display purcentage difference)
     -
-
 ____________________________________________________________________________________________________________________
 In process:
     -tags(left to do:
@@ -60,6 +62,10 @@ Completed:
         display name
         display address
         can pick traitement, preparation, livraison, livree
+    -main admin:
+        -admin login
+        -admin user
     -rayon nav bar at the bottom of main nav mar (in black)
     -multiple delete on product
     -display of addresses
+    - implement login by facebook
