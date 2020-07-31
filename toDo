@@ -16,10 +16,10 @@ Not started:
         - airtel money / mobiCash
         - creditCARD (paypal && regural cc)
 
-    - quick add to cart
-    - put pictures to subCategories and categories
-    - reduce product's square size
-    - add footers:
+    !!! - quick add to cart
+    !!! - put pictures to subCategories and categories
+    !  - reduce product's square size
+    !! - add footers:
         -join us
             - partner stores
         -help
@@ -32,7 +32,6 @@ Not started:
     - try to remove product's image background so it is transporant
     - change from session to cookies
     - display cart on the side after a product is added
-    - login modal when doing something that requires login
     - implement promo by price (and display purcentage difference)
     -
 ____________________________________________________________________________________________________________________
@@ -46,6 +45,8 @@ In process:
 
     -add provider on product
     -improve user profile (edit admin order accordingly)
+    - login modal when doing something that requires login
+
 
 
 

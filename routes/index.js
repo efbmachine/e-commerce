@@ -26,7 +26,7 @@ var transporter = nodemailer.createTransport({
 /* GET home page. */
 router.get('/',async(req,res,next)=>{
     let connected = false;
-    console.log('req.session',req.session);
+    console.log('req.cookies',req.cookies);
     let category = await CategoryModel.findByName('Alimentaire')
     try{
 
@@ -38,7 +38,7 @@ router.get('/',async(req,res,next)=>{
             res.redirect(route)
         }
 
-        else if(req.session.passport.user.id){
+        else if(req.user){
             return res.render('client/index',{
                 message:req.flash(),
                 category:category[0],
