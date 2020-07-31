@@ -5,8 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var flash = require('req-flash');
-require('./config/mongoose');
+var db = require('./config/mongoose');
 var passport = require('./config/passport');
 
 
@@ -33,7 +34,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret: 'keyboard screen glass',
+    secret: 'keyboard screen sunglasses',
+    store: new MongoStore({ mongooseConnection: db }),
     resave: true,
     saveUninitialized: true,
     cookie: {

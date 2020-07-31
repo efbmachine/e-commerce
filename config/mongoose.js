@@ -22,7 +22,9 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.set('useNewUrlParser',true)
 mongoose.connect(realMDB);
 //get the default connection
-var db = mongoose.connection;
+let db = mongoose.connection;
+
 //console.log('###############################################################');
 //console.log(db);
 db.on('error',console.error.bind(console, 'MongoDB connection error'));
+module.exports = db
