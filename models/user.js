@@ -73,10 +73,15 @@ userSchema.methods.hashPassword = function(password) {
 };
 
 userSchema.methods.authenticate = async function(password) {
+    if(!this.hasPassword)
+    {
+        return false
+     }
     console.log('authenticating');
     // console.log(this.password)
     console.log(this.password);
     let temp = await this.hashPassword(password)
+
     console.log(temp);
 // hconsole.log(temp)
     return this.password === temp;
