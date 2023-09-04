@@ -17,8 +17,8 @@ var passport = require('../config/passport')
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'efbmachine06@gmail.com',
-    pass: 'franco britannique'
+    user: '1412KaitoX@gmail.com',
+    pass: 'justkeepg0ing!'
   }
 });
 
