@@ -94,21 +94,23 @@ block content
         }
 
         function calcTotal(){
-            let totalElement = document.getElementById('maxTotal')
-            let total = 0
-            for(let i=0;i<length;i++){
-                total += myFunction(i)
-            }
-            totalElement.innerHTML = total + " Fcfa"
-            document.getElementById('submitPrice').value = total
-            let orderButton = document.getElementById('order')
-            let alert = document.getElementById('alertMessage')
-            if(total<5000){
-                alert.classList.add('show')
-                orderButton.disabled=true
-            }else{
-                alert.classList.remove('show')
-                orderButton.disabled=false
+            if(document.getElementById('maxTotal')){
+                let totalElement = document.getElementById('maxTotal')
+                let total = 0
+                for(let i=0;i<length;i++){
+                    total += myFunction(i)
+                }
+                totalElement.innerHTML = total + " Fcfa"
+                document.getElementById('submitPrice').value = total
+                let orderButton = document.getElementById('order')
+                let alert = document.getElementById('alertMessage')
+                if(total<5000){
+                    alert.classList.add('show')
+                    orderButton.disabled=true
+                }else{
+                    alert.classList.remove('show')
+                    orderButton.disabled=false
+                }
             }
         }
 
