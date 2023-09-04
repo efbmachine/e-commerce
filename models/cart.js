@@ -13,6 +13,7 @@ var cartSchema = new Schema({
 })
 
 cartSchema.methods.addProduct = async function (productId,quantity=1){
+    console.log(`----------------------------Adding ${productId} x${quantity} to cart---------------------------------`)
     let found = false
     if(!found){
         console.log(productId)
@@ -21,7 +22,7 @@ cartSchema.methods.addProduct = async function (productId,quantity=1){
             console.log(typeof(item.product));
             if(item.product==productId||isEquivalent(productId,item.product)){
                 let temp = Number(this.list[i].quantity) + Number(quantity)
-                console.log('----------------------------------- update:',temp)
+                console.log('Cart Found, here is the update:',temp)
                 this.list[i].quantity = temp
                 found = true
                 await this.updateCount()
@@ -30,7 +31,7 @@ cartSchema.methods.addProduct = async function (productId,quantity=1){
         })
     }
     if(!found){
-        console.log('------------------------------- create:',)
+        console.log('Cart not found,  creating one',)
         let item = {}
         item.product= productId
         item.quantity = quantity
@@ -98,7 +99,7 @@ cartSchema.methods.empty = function(){
     this.numOfProducts =0
 }
 cartSchema.methods.fuseWith = function(cart){
-    console.log('fusing with')
+    console.log('Fuse ------------------------------------------------------')
     if(cart!=null){
         cart.list.forEach( (item, i) => {
             console.log('round #'+i);
@@ -110,7 +111,7 @@ cartSchema.methods.fuseWith = function(cart){
     this.updateCount()
 }
 cartSchema.methods.updateCount = async function() {
-    console.log('started counting');
+    console.log('Update Count -------------------------------------------------------------------')
     let count = 0
     await this.list.forEach((item, i) => {
         console.log(item.quantity)
