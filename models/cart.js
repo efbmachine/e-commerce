@@ -41,28 +41,36 @@ cartSchema.methods.addProduct = async function (productId,quantity=1){
 }
 cartSchema.methods.editCart = async function (products,qty){
     console.log('products,qty',products,qty)
-    await this.list.forEach((item, i) => {
-        try {
-            products.forEach((product, j) => {
-                if(item.product==product){
-                    if(qty[j]==0){
+    console.log(typeof(products),typeof(qty));
+    if(this.list.length==0){
+        if(typeof(products)=='string' && typeof (qty) == 'number' )
+        this.addProduct(products,qty)
+    }
+    else{
+        await this.list.forEach((item, i) => {
+            try {
+                products.forEach((product, j) => {
+                    if(item.product==product){
+                        if(qty[j]==0){
+                            this.list.splice(i,1)
+                        }else{
+                            this.list[i].quantity = qty[j]
+                        }
+                    }
+                });
+            }
+            catch (e) {
+                if(item.product==products){
+                    if(qty==0){
                         this.list.splice(i,1)
                     }else{
-                        this.list[i].quantity = qty[j]
+                        this.list[i].quantity = qty
                     }
                 }
-            });
-        } catch (e) {
-            if(item.product==products){
-                if(qty==0){
-                    this.list.splice(i,1)
-                }else{
-                    this.list[i].quantity = qty
-                }
             }
-        }
+        })
+    }
 
-    });
     this.updateCount()
 
 }
@@ -113,6 +121,31 @@ cartSchema.statics.findByUser = async function(userId){
     return await this.findOne({owner:userId})
 }
 
+cartSchema.methods.updateOneItemInCart = async function(productId,qty=1){
+    if(this.list.length == 0){
+        let listItem = {"product":productId,"quantity":qty}
+        this.list.push(listItem)
+        return this.updateCount()
+    }
+    else{
+        console.log('cart ! empty');
+        try {
+            this.list.forEach((item, i) => {
+                console.log('item:',item);
+                if(item['product']==productId){
+                    item.quantity = qty
+                }
+            });
+        }
+        catch(e){
+            console.log('error: ',e)
+        }
+    }
+
+    this.list.forEach((item)=>{
+
+    })
+}
 // cartSchema.post('save',async function(next){
 //     console.log('saved cart');
 //     let user = await UserModel.findById(this.owner)

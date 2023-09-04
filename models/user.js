@@ -73,7 +73,7 @@ userSchema.methods.hashPassword = function(password) {
 };
 
 userSchema.methods.authenticate = async function(password) {
-    if(!this.hasPassword)
+    if(!this.hasPassword || !this.isPasswordHashed)
     {
         return false
      }

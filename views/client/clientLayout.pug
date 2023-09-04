@@ -129,8 +129,6 @@ html
             $.get('/getCart',function(data,status){
                 console.log('getting')
                 if(status=='success'){
-                    console.log('data:')
-                    console.log(data)
                     $('#shopCartNumber').html(data.number)
                 }else{
                     console.log('could not get number')
@@ -141,9 +139,7 @@ html
                     return data
                 }}
             )
-            console.log(cats)
             for(subcat of cats.subcats){
-                console.log(subcat)
                 let a = $('<a></a>')
                 a.attr('href','/category/Alimentaire/'+subcat._id)
                 a.html(subcat.name)

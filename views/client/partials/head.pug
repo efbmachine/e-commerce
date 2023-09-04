@@ -1,14 +1,13 @@
 .container-fluid.mainNav
     .bar
-
         .profile
             a(href='/profile')
                 button.btn(type='button')
                     i.fa.fa-user.fa-3x
+
         .title
             a#namae.navbar-brand(href='/' style='color:orange')
                 img.logo(src='/images/Logo-1.svg')
-
 
         .shoppingCart
             a(href='/cart')
@@ -21,9 +20,23 @@
 
     .search-container
         form(action='/search' method='POST')
-            input(type='text', placeholder='Recherche..', name='search')
-            button(type='submit')
-                i.fa.fa-search
+            .row
+                .col-1
+                    button(type='button' class='btn btn-dark')
+                        i.fa.fa-bars(style='color:white')
+
+                .col-11
+                    .input-group.mb-2
+                        input.form-control(type='text', name='search', placeholder="Recherche de produits", aria-label="Recherche de produits", aria-describedby='basic-addon2')
+                        .input-group-append
+                            button.btn.btn-dark(type='submit')
+                                i.fa.fa-search(style='color:white')
+
+
+
+
+
+
 
 
 .scrollmenu#catBar

@@ -6,9 +6,86 @@ block content
             b= subCat.name + ' '
             | (#{subCat.products.length} produits)
     .flex-container.selection
-        each product in subCat.products
-            a(href='/product/'+product._id)
-                .product
+        each product,index in subCat.products
+            .product(id='product'+index)
+                a(href='/product/'+product._id)
                     p= product.name
                     img(src=product.imgPath)
                     p= product.price + "Fcfa"
+                #cartOptions
+                    .row
+                        .col-12
+                            button.addToCartButton.btn(id='addToCartButton'+index data=index type='button' value=''+product._id)
+                                i.fa.fa-cart-plus
+                        .col-4
+                        .col-4
+                            select.form-control.addToCartQty(id='addToCartQty'+index hidden)
+                                option(value='0') 0
+                                option(value='1' selected) 1
+                                option(value='2') 2
+                                option(value='3') 3
+                                option(value='4') 4
+                                option(value='5') 5
+                                option(value='6') 6
+                                option(value='7') 7
+                                option(value='8') 8
+                                option(value='9') 9
+                                option(value='10') 10
+                        .col-3
+
+
+    script.
+
+        async function addToCartAnimation(){
+            let addToCartButtons = document.getElementsByClassName('addToCartButton')
+
+            for(button of addToCartButtons){
+                console.log(button.data)
+                button.addEventListener('click',function(){
+                    let index = button.id[button.id.length-1]
+                    console.log('index:',index)
+                    let addToCartQty = document.getElementById('addToCartQty'+index)
+                    addToCartQty.hidden = false
+                    this.hidden = true
+                })
+            }
+
+            let addToCartQty = document.getElementsByClassName('addToCartQty')
+            console.log('addToCartQty:',addToCartQty)
+            index = 0;
+            for await(select of addToCartQty){
+                select.addEventListener('change',function(){
+                    console.log('value of select:',select.value)
+                    let addToCartButton = document.getElementById('addToCartButton'+index)
+                    if(select.value=='0'){
+                        addToCartButton.hidden = false
+                        this.hidden = true
+                    }
+                let productId = addToCartButton.value
+                updateCart(productId,select.value)
+
+                })
+            }
+        }
+
+        addToCartAnimation()
+
+        function updateCart(productId, qty){
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '/api/updateCart', true);
+            let data = {"productId":productId,"qty":qty}
+
+            //Send the proper header information along with the request
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function() { // Call a function when the state changes.
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    console.log(this.response)
+                    console.log('noice')
+                    alert('awesome')
+                }
+            }
+            xhr.send(JSON.stringify(data));
+            // xhr.send(new Int8Array());
+            // xhr.send(document);
+        }

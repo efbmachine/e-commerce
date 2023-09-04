@@ -13,7 +13,7 @@ require('../models/admin');
 
 
 //set up default mongoose connection
-var realMDB = 'mongodb+srv://webApp:NJtXnDLb46XKeak@cluster0-fizxw.mongodb.net/glovo241?retryWrites=true&w=majority'
+var realMDB = 'mongodb+srv://writinguser:k9KdaOVW83vwz176@cluster0.klooapz.mongodb.net/?retryWrites=true&w=majority'
 var local = 'mongodb://localhost:27017/test'
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);

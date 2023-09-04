@@ -1,24 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var fileUpload = require('express-fileupload');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
-var flash = require('req-flash');
-var db = require('./config/mongoose');
-var passport = require('./config/passport');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const fileUpload = require('express-fileupload');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const flash = require('req-flash');
+const db = require('./config/mongoose');
+const passport = require('./config/passport');
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var productsRouter = require('./routes/products');
-var categoryRouter = require('./routes/categories');
-var adminRouter = require('./routes/admin')
-var apiRouter = require('./routes/api')
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const productsRouter = require('./routes/products');
+const categoryRouter = require('./routes/categories');
+const adminRouter = require('./routes/admin')
+const apiRouter = require('./routes/api')
 
-var app = express();
+const app = express();
 
 
 

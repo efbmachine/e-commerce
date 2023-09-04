@@ -26,7 +26,11 @@ var transporter = nodemailer.createTransport({
 /* GET home page. */
 router.get('/',async(req,res,next)=>{
     let connected = false;
-    console.log('req.cookies',req.cookies);
+    console.log('req.cookies: ',req.cookies);
+    console.log('req.session: ',req.session);
+    if(req.user){
+        console.log('cart from req.user: ',req.user.cart);
+    }
     let category = await CategoryModel.findByName('Alimentaire')
     try{
 
