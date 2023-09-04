@@ -22,7 +22,10 @@ var app = express();
 
 
 
-app.use(fileUpload());
+app.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

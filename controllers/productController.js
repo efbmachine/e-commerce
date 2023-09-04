@@ -1,12 +1,10 @@
 var path = require('path')
-var AWS = require('aws-sdk')
 var ProductModel = require('mongoose').model('Product');
 var CategoryModel = require('mongoose').model('Category');
 var TagModel = require('mongoose').model('Tag');
 
 
-
-const s3 = new AWS.S3();
+var cloudinary = require('../config/cloudinary')
 
 
 
@@ -50,62 +48,65 @@ exports.renderEdit = (req,res,next)=>{
 }
 
 exports.edit =  async (req,res,next)=>{
-    let product = await  ProductModel.findById(req.params.productId)
-    if(product==null){
-        return next(new Error("This product Id does not exist"))
-    }
-
-    //Defining products new values
-    product.name = req.body.name
-    product.description = req.body.description
-    product.price = req.body.price
-    let tags = req.body.tags.split(',')
-    tags = tags.filter(tag=>{
-        return(tag !== (' '||null||''))
-    })
-    product.tags = tags
-
-
-    var cat = req.body.category.split('.',2),
-        category = cat[0],
-        subCat = cat[1];
-
-    // If the subcategory of the product changed
-    if((product.subCat != subCat)){
-        console.log('changing subcategory');
-        let oldCat = await CategoryModel.findById(product.category)
-        if(oldCat!=null){
-            oldCat.removeProduct(product)
-            oldCat.save()
+    try {
+        
+    
+        let product = await  ProductModel.findById(req.params.productId)
+        if(product==null){
+            return new Error("This product Id does not exist")
         }
-        product.category = category
-        product.subCat = subCat
-    }
-    var image = req.files? req.files.img : null
-    if(image != null){
-        const params = {
-            Bucket: 'glovo241images',
-            Key: image.name, // File name you want to save as in S3
-            Body: image.data
-        };
-        // Uploading files to the bucket
-        s3.upload(params, function(err, data) {
-            if (err) {
 
-                return next(err);
-            }
-            console.log(`File uploaded successfully. `);
-            product.imgPath = data.Location
-            console.log('At location:'+product.imgPath);
+        //Defining products new values
+        product.name = req.body.name
+        product.description = req.body.description
+        product.price = req.body.price
+        let tags = req.body.tags.split(',')
+        tags = tags.filter(tag=>{
+            return(tag !== (' '||null||''))
         })
+        product.tags = tags
+
+
+        var cat = req.body.category.split('.',2),
+            category = cat[0],
+            subCat = cat[1];
+
+        // If the subcategory of the product changed
+        if((product.subCat != subCat)){
+            console.log('changing subcategory');
+            let oldCat = await CategoryModel.findById(product.category)
+            if(oldCat!=null){
+                oldCat.removeProduct(product)
+                oldCat.save()
+            }
+            product.category = category
+            product.subCat = subCat
+        }
+        var image = req.files? req.files.img : null
+        if(image != null){
+            // Uploading files to the bucket
+            let result = await cloudinary.uploader.upload(image.tempFilePath, (err, info)=>{
+                if(err){
+                    console.log('Erro while uploading image edit')
+                    return new Error(err)
+                }
+                return info
+            })
+
+            console.log('File uploaded succesfully.')
+            product.imgPath = result.url
+            console.log('Here is the new location:'+product.imgPath)
+        }
+
+        product.save(err=>{
+
+            if(err) return new Error(err)
+            return res.redirect(`/admin/product/${product._id}`)
+
+        })
+    } catch (error) {
+        return next(error)
     }
-
-    product.save(err=>{
-
-        if(err) return next(err)
-        return res.redirect(`/admin/product/${product._id}`)
-
-    })
 }
 
 exports.renderAddProduct = (req,res,next)=>{
@@ -119,57 +120,68 @@ exports.renderAddProduct = (req,res,next)=>{
     })
 }
 
-exports.addProduct =  (req,res,next)=>{
+exports.addProduct = async (req,res,next)=>{
+    try {
     // if(!req.session.userId){
     //     return res.redirect('/unauthorized')
     // }
-    var name = req.body.name,
-        description  = req.body.description,
-        price  = req.body.price;
-    // req.body.category = category._id+'.'+subCat
-    var cat = req.body.category.split('.',2),
-        category = cat[0],
-        subCat = cat[1];
-    var tags = req.body.tags.split(',')
-    tags = tags.filter(tag=>{
-        return(tag !== (' '||null||''))
-    })
+        var name = req.body.name,
+            description  = req.body.description,
+            price  = req.body.price;
+        // req.body.category = category._id+'.'+subCat
+        var cat = req.body.category.split('.',2),
+            category = cat[0],
+            subCat = cat[1];
+        var tags = req.body.tags.split(',')
+        tags = tags.filter(tag=>{
+            return(tag !== (' '||null||''))
+        })
 
-    //------------------------ UNCOMMENT ME AFTER TESTING ------------------
-    var image = req.files.img
-    // ------------- Image uploading to s3 -----------------------
-    // Setting up S3 upload parameters
-    const params = {
-        Bucket: 'glovo241images',
-        Key: image.name, // File name you want to save as in S3
-        Body: image.data
-    };
+        //------------------------ UNCOMMENT ME AFTER TESTING ------------------
+        var image = null;
+        var location = null
 
-    // Uploading files to the bucket
-    console.log('about to upload picture');
-    s3.upload(params, function(err, data) {
-        if (err) { return next(err);}
-        console.log(`File uploaded successfully. ${data.Location}`);
+        if (req.files){
+            image = req.files.img
+            console.log(image)
+        }
 
-         // image.mv( `${__dirname}/../public/images/${image.name}`, (err)=>{
-         //     if(err) return next(err)
-         // })
-         var product = new ProductModel({
-                                         imgPath:data.Location,
-                                         name:name,
-                                         description:description,
-                                         price:price,
-                                         category:category,
-                                         subCat:subCat,
-                                         tags:tags
-                                     });
-         product.save((err,data)=>{
-             if(err) return next(err);
-             console.log('saved product')
-             // // console.log('data: ',data)
-             return res.redirect(`/admin/product/${data._id}`);
-         })
-     });
+        if (image==null){
+            // Image is null
+            console.log('image is null')
+        }
+        else{
+            // Uploading files to the bucket
+            console.log('about to upload picture');
+            let imgPath = image.tempFilePath
+            console.log('This is the path', imgPath)
+            let result = await cloudinary.uploader.upload(imgPath)
+            location = result.url
+        
+        }
+
+        // 
+        var product = new ProductModel({
+            imgPath:location,
+            name:name,
+            description:description,
+            price:price,
+            category:category,
+            subCat:subCat,
+            tags:tags
+        });
+
+        product.save((err,data)=>{
+            if(err) return next(err);
+            console.log('saved product')
+            // // console.log('data: ',data)
+            return res.redirect(`/admin/product/${data._id}`);
+        })
+    } catch (error) {
+        console.log('Something bad happened, here is the thing:')
+        console.log(error)
+        return next(error)
+    }
 
 
 
