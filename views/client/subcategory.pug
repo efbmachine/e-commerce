@@ -15,11 +15,11 @@ block content
                 #cartOptions
                     .row
                         .col-12
-                            button.addToCartButton.btn(id='addToCartButton'+index data=index type='button' value=''+product._id)
+                            button.addToCartButton.btn(id='addToCartButton'+index index=index type='button')
                                 i.fa.fa-cart-plus
                         .col-4
                         .col-4
-                            select.form-control.addToCartQty(id='addToCartQty'+index hidden)
+                            select.form-control.addToCartQty(id='addToCartQty'+index index=index productId=product._id hidden)
                                 option(value='0') 0
                                 option(value='1' selected) 1
                                 option(value='2') 2
@@ -31,7 +31,7 @@ block content
                                 option(value='8') 8
                                 option(value='9') 9
                                 option(value='10') 10
-                        .col-3
+                        .col-4
 
 
     script.
@@ -40,10 +40,8 @@ block content
             let addToCartButtons = document.getElementsByClassName('addToCartButton')
 
             for(button of addToCartButtons){
-                console.log(button.data)
+                let index = button.getAttribute('index')
                 button.addEventListener('click',function(){
-                    let index = button.id[button.id.length-1]
-                    console.log('index:',index)
                     let addToCartQty = document.getElementById('addToCartQty'+index)
                     addToCartQty.hidden = false
                     this.hidden = true
@@ -51,19 +49,21 @@ block content
             }
 
             let addToCartQty = document.getElementsByClassName('addToCartQty')
-            console.log('addToCartQty:',addToCartQty)
-            index = 0;
             for await(select of addToCartQty){
                 select.addEventListener('change',function(){
-                    console.log('value of select:',select.value)
+                    let index = this.getAttribute('index')
+                    let productId = this.getAttribute('productId')
+                    let qty = this.value
                     let addToCartButton = document.getElementById('addToCartButton'+index)
-                    if(select.value=='0'){
+                    if(this.value=='0'){
                         addToCartButton.hidden = false
                         this.hidden = true
-                    }
-                let productId = addToCartButton.value
-                updateCart(productId,select.value)
-
+                        return 
+                    }                
+                    console.log(`This is the info being passed: ${productId} x${qty}`)
+                    let result = updateCart(productId,qty)
+                    addToCartButton.hidden = false
+                    this.hidden = true
                 })
             }
         }
@@ -72,7 +72,7 @@ block content
 
         function updateCart(productId, qty){
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", '/api/updateCart', true);
+            xhr.open("POST", '/api/addToCart', true);
             let data = {"productId":productId,"qty":qty}
 
             //Send the proper header information along with the request
@@ -81,8 +81,13 @@ block content
             xhr.onreadystatechange = function() { // Call a function when the state changes.
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                     console.log(this.response)
-                    console.log('noice')
-                    alert('awesome')
+                    console.log('Sucess')
+                    //- location.reload()
+                    alert('Article(s) rajoute(s) au panier')
+                }
+                else if(this.status !== 200){
+                    console.log('maybe an issue')
+                    alert('check console for issue')
                 }
             }
             xhr.send(JSON.stringify(data));

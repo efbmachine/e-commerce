@@ -40,7 +40,7 @@ router.get('/getOrders/:orderStatus',async(req,res,next)=>{
     return res.send(orders)
 })
 
-router.post('/updateCart/', async(req,res,next)=>{
+router.post('/addToCart/', async(req,res,next)=>{
     let cart
     //  If logged not in
     if(req.session.passport==null){
@@ -73,15 +73,15 @@ router.post('/updateCart/', async(req,res,next)=>{
     }
     let product = (req.body.productId),
         qty = req.body.qty;
-    cart.updateOneItemInCart(product,qty)
+    cart.addProduct(product,qty)
     cart.save((err)=>{
             if(err) {
                 res.status(500)
-                res.json({'msg':"Le chariot n'a pas pu etre modifier. Veuillez reesayer."})
+                res.json({'msg':"Le produit n'a pas pu etre rajouter. Veuillez reesayer."})
                 return console.log(err)
             }
             res.status(200)
-            return res.json({'msg':"Le chariot a ete modifier avec succes"})
+            return res.json({'msg':"Le produit a ete ajouter avec succes"})
         })
 
 })
