@@ -99,12 +99,15 @@ cartSchema.methods.empty = function(){
 }
 cartSchema.methods.fuseWith = function(cart){
     console.log('fusing with')
-    cart.list.forEach( (item, i) => {
-        console.log('round #'+i);
-        console.log(item.product,' times ',item.quantity)
-        this.addProduct(item.product,item.quantity)
-    });
-    this.updateCount
+    if(cart!=null){
+        cart.list.forEach( (item, i) => {
+            console.log('round #'+i);
+            console.log(item.product,' times ',item.quantity)
+            this.addProduct(item.product,item.quantity)
+        });
+    }
+
+    this.updateCount()
 }
 cartSchema.methods.updateCount = async function() {
     console.log('started counting');
