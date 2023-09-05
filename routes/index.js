@@ -31,8 +31,7 @@ router.get('/',async(req,res,next)=>{
     if(req.user){
         console.log('cart from req.user: ',req.user.cart);
     }
-    let subCats = await CategoryModel.getSubCategories()
-    console.log('subCats from index router:', subCats)
+    let category = await CategoryModel.findByName('Alimentaire')
     try{
 
         if(req.session.returnTo!=null){
@@ -46,7 +45,7 @@ router.get('/',async(req,res,next)=>{
         else if(req.user){
             return res.render('client/index',{
                 message:req.flash(),
-                subCats:subCats,
+                category:category[0],
                 connected:true,
                 cart:req.user.cart
             })
@@ -55,7 +54,7 @@ router.get('/',async(req,res,next)=>{
         if(req.user==null&&req.session!=null)
             return res.render('client/index',
                 {message:req.flash(),
-                    subCats:subCats,
+                    category:category[0],
                     cart:req.session.cart})
     }
 
