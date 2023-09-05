@@ -16,14 +16,14 @@ block content
             .selection
                 p
                     b Rayon
-                if(!category)
+                if(!subCats)
                     p Aucun rayon existant
                 else
                     .flex-container
-                        each subCat in category.subCats
-                            a(href='category/'+category.name+'/'+subCat._id)
+                        each item in subCats
+                            a(href=`/category/${item.cat.name}/${item.subcat._id}`)
                                 .box
-                                    p= subCat.name
+                                    p=item.subcat.name
     script.
         let connected = `#{connected}`
         if(connected == "true"){
