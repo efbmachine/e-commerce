@@ -1,4 +1,3 @@
-doctype html
 html
   head
     title Ogooue Delivery
@@ -67,7 +66,6 @@ html
 
 
 
-
     #addAddressModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addAddressModalTitle', aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-content
@@ -126,25 +124,39 @@ html
             })
 
 
-            $.get('/getCart',function(data,status){
-                console.log('getting')
-                if(status=='success'){
-                    $('#shopCartNumber').html(data.number)
-                }else{
-                    console.log('could not get number')
-                }
-            })
-            let cats = await $.get('/api/getCat/Alimentaire',function(data,status){
+            const refreshCartNumber = () => {
+            
+                $.get('/getCart',function(data,status){
+                    console.log('getting')
+                    if(status=='success'){
+                        console.log('done refreshing cart #')
+                        $('#shopCartNumber').html(data.number)
+                        return 'done'
+                    }else{
+                        console.log('could not get number')
+                        return null
+                    }
+                })
+            }
+
+            refreshCartNumber()
+            const subcats = await $.get('/api/getSubCats',function(data,status){
                 if(status == 'success'){
                     return data
-                }}
-            )
-            for(subcat of cats.subcats){
-                let a = $('<a></a>')
-                a.attr('href','/category/Alimentaire/'+subcat._id)
-                a.html(subcat.name)
-                $('#catBar').append(a)
+                }
+                return null
+            })
+            
+            if(subcats != null){
+                for(item of subcats){
+                    let a = $('<a></a>')
+                    a.attr('href',`/category/${item.cat.name}/${item.subcat._id}`)
+                    a.html(item.subcat.name)
+                    $('#catBar').append(a)
+                    
+                }
             }
+
             $('#rayon').click(function(){
                 let div = $('#displayCategories')
                 if(div.html()!=''){
