@@ -17,13 +17,60 @@ categorySchema.statics.findByName = async function(name){
     }
 
 }
-categorySchema.statics.getCategories = function(){
-     this.find({},{name:1,subCats:1},(err, category)=>{
-        if(err) return next(err)
-        console.log(category)
-        return category
-    })
+categorySchema.statics.getCategories = async function(){
+    try{
+        let categories = await this.find({},{name:1,subCats:1},(err, categories)=>{
+            if(err) return 
+            console.log('FROM CATEGORY MODEL GET CATEGORIES: ',categories)
+            return categories
+        })
+        if(categories==null){
+            new Error('Something went wrong when fetching the categories')
+        }
+        return categories
+    } catch (e){
+        console.log(e)
+        return null
+    }
 }
+
+categorySchema.statics.getSubCategories = async function(){
+    console.log('FROM MODEL STATICS GET SUB CATEGORIES ----------------------------')
+    try{
+        const allSubCats = []
+        
+
+        let cats = await this.find({},{name:1,subCats:1},(err, category)=>{
+            if(err) return new Error(err)
+            return category
+    })
+        console.log('FUCK THIS I AM IN THE SERVER:',cats)
+
+        await cats.forEach(cat => {
+            cat.subCats.forEach(subcat=> {
+                allSubCats.push({'cat':cat,'subcat':subcat})
+            })
+        });
+        console.log('Result of static subcategories',allSubCats,'--------------------------------------------------')
+
+        return allSubCats
+    }
+    catch(e){
+        console.log(e)
+        return new Error(e)
+    }
+
+}
+
+// for (var i = 0; i < this.subCats.length; i++) {
+//     if (this.subCats[i]._id == id) {
+//         console.log('bingo')
+//         let cat = await this.populate({path: 'subCats.products',model:'Product'}).execPopulate()
+//         return cat.subCats[i]
+//     }
+// }
+
+
 categorySchema.methods.addSubCategory=function(subcat) {
         console.log(this)
         return this.subCats.push(subcat)
