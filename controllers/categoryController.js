@@ -13,10 +13,14 @@ exports.renderCreate = (req,res,next)=>{
 exports.create = (req,res,next) => {
     console.log(req.body)
     let subCats = []
-    req.body.subCats.forEach((subcat, i) => {
-        if(subcat != '')
-            subCats.push({name:subcat,products:[]})
-    });
+    if(req.body.subCats != ''){
+        req.body.subCats.forEach((subcat, i) => {
+            if(subcat != '')
+                subCats.push({name:subcat,products:[]})
+        });
+    }else {
+        subCats.push({name:req.body.name,products:[]})
+    }
 
     var category = new CategoryModel({
         name:req.body.name,
