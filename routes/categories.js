@@ -7,6 +7,22 @@ var CategoryModel = require('mongoose').model('Category');
 
 /* GET home page. */
 
+router.get('/', async (req,res,next)=>{
+    try{
+        let result = await CategoryModel.getCategories() 
+        console.log('? index of category page:', result)
+        if(result!= null)
+            return res.json( result )
+        else {
+            res.status=500
+            new Error('Something went wrong when fetching categories')
+        }
+       
+    }catch(e){
+        return  next(e)
+    }
+})
+
 router.get('/:categoryName/:subcategoryId',async (req,res,next)=>{
     try {
         let cat = await CategoryModel.findByName(req.params.categoryName)
