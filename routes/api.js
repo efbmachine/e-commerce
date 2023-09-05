@@ -16,14 +16,35 @@ var passport = require('../config/passport')
 
 router.get('/getCat/:catName',async(req,res,next)=>{
     try {
-        let category = await CategoryModel.findOne({name:'Alimentaire'},{'subCats.name':1, 'subCats._id':1})
+        if(!req.params.catName){
+            error = new Error('No category name used')
+            res.status(404)
+            res.send(error)
+            return next(error)
+        }
+        let category = await CategoryModel.findOne({name:req.params.catName},{'subCats.name':1, 'subCats._id':1})
         res.status(200)
-        return res.json({subcats:category.subCats}) 
+        console.log('here i the category', category.name)
+        return res.json({cat:category.name, subcats:category.subCats}) 
+    } catch (error) {
+        console.log(error)
+        return next(error)
+    }
+   
+})
+
+
+router.get('/getSubCats',async(req,res,next)=>{
+    try {
+        let category = await CategoryModel.getSubCategories()
+        res.status(200)
+        return res.json(category) 
     } catch (error) {
         return next()
     }
    
 })
+
 router.get('/updateCart/:productID/:quantity',async(req,res,next)=>{
     let cartId = req.session.cart || req.user.cart
 
