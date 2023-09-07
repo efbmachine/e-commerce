@@ -90,7 +90,7 @@ router.get('/cart',async (req,res,next)=>{
         }
         console.log('get cart 4 user')
     }
-    console.log(cart)
+    // console.log(cart)
     await cart.populate({path: 'list.product',model:'Product'}).execPopulate()
     // console.log('----------------------- cart:',cart)
     let userId = (req.user!=null)?req.user._id:null
@@ -178,7 +178,7 @@ router.post('/emptyCart',async (req,res,next)=>{
             console.log('created the cart')
         }
     }
-    console.log(cart)
+    // console.log(cart)
     cart.empty()
     cart.save((err)=>{
             if(err) return next(err)

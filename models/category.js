@@ -29,13 +29,13 @@ categorySchema.statics.getCategories = async function(){
         }
         return categories
     } catch (e){
-        console.log(e)
+        console.log('Error: '+e)
         return null
     }
 }
 
 categorySchema.statics.getSubCategories = async function(){
-    console.log('FROM MODEL STATICS GET SUB CATEGORIES ----------------------------')
+    // console.log('FROM MODEL STATICS GET SUB CATEGORIES ----------------------------')
     try{
         const allSubCats = []
         
@@ -44,14 +44,14 @@ categorySchema.statics.getSubCategories = async function(){
             if(err) return new Error(err)
             return category
     })
-        console.log('FUCK THIS I AM IN THE SERVER:',cats)
+        // console.log('FUCK THIS I AM IN THE SERVER:',cats)
 
         await cats.forEach(cat => {
             cat.subCats.forEach(subcat=> {
                 allSubCats.push({'cat':cat,'subcat':subcat})
             })
         });
-        console.log('Result of static subcategories',allSubCats,'--------------------------------------------------')
+        // console.log('Result of static subcategories',allSubCats,'--------------------------------------------------')
 
         return allSubCats
     }
@@ -72,7 +72,7 @@ categorySchema.statics.getSubCategories = async function(){
 
 
 categorySchema.methods.addSubCategory=function(subcat) {
-        console.log(this)
+        // console.log(this)
         return this.subCats.push(subcat)
 
 }
