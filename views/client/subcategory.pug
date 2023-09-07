@@ -82,12 +82,12 @@ block content
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                     console.log(this.response)
                     console.log('Sucess')
-                    //- location.reload()
-                    alert('Article(s) rajoute(s) au panier')
+                    location.reload()
+                    //- alert('Article(s) rajoute(s) au panier')
                 }
                 else if(this.status !== 200){
                     console.log('maybe an issue')
-                    alert('check console for issue')
+                    alert('Une erreur a eu lieux, veuillez reesayer.')
                 }
             }
             xhr.send(JSON.stringify(data));
