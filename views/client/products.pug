@@ -7,7 +7,7 @@ block content
             .product(id='product'+index)
                 a(href='/product/'+product._id)
                     p= product.name
-                    img(src=product.imgPath)
+                    img.product_img(src=product.imgPath)
                     p= product.price + "Fcfa"
                 #cartOptions
                     .row

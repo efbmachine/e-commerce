@@ -207,6 +207,10 @@ img{
 
 
 }
+.product_img{
+    max-width:100%;
+    height: auto;
+}
 .box{
     display: flex;
     justify-content: center;
