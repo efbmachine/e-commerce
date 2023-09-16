@@ -13,7 +13,7 @@ require('../models/admin');
 
 
 //set up default mongoose connection
-var realMDB = 'mongodb+srv://writinguser:k9KdaOVW83vwz176@cluster0.klooapz.mongodb.net/?retryWrites=true&w=majority'
+var realMDB = process.env.ATLAS_DB
 var local = 'mongodb://localhost:27017/test'
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);

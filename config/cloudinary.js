@@ -1,10 +1,11 @@
 
+
 const cloudinary = require('cloudinary').v2
           
 cloudinary.config({ 
-  cloud_name: 'dasmls43c', 
-  api_key: '955375282228584', 
-  api_secret: '4KL673uPqSemf0WhV_wGDS9O0Hs' 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY , 
+  api_secret: process.env.CLOUDINARY_API_SECRET  
 });
 
 module.exports = cloudinary

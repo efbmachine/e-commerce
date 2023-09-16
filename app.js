@@ -1,3 +1,5 @@
+const dotenv = require('dotenv').config()
+console.log(dotenv);
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -9,6 +11,7 @@ const MongoStore = require('connect-mongo')(session);
 const flash = require('req-flash');
 const db = require('./config/mongoose');
 const passport = require('./config/passport');
+
 
 
 const indexRouter = require('./routes/index');
