@@ -6,5 +6,5 @@ It allows users to add products to the basket and order them. There is also an a
 
 This app was built using MongoDB, Express, Pug, NodeJs, Jquery and Mongoose.
 
-You can access the app at https://ogooue-delivery.onrender.com/. However, since I am using free hosting prepare for a load time of at least 15seconds
+You can access the app at https://ogooue-delivery.onrender.com/. However, since I am using free hosting prepare for a load time of at least 15 seconds. Also, the app is completely in French as it is the spoken language in Gabon. 
 
